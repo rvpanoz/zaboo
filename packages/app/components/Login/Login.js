@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
@@ -11,8 +11,8 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import { TermsModal } from "../common/";
 
+import { TermsModal } from "../common/";
 import { loginUser } from "../../actions/user/actions";
 import {
   isPasswordValid,
@@ -31,7 +31,7 @@ const initialState = {
 };
 
 const useStyles = makeStyles(styles);
-const stateReducer = (state, action) => {
+const reducer = (state, action) => {
   switch (action.type) {
     case "SET_LOGIN_DISABLED": {
       return {
@@ -71,7 +71,7 @@ const stateReducer = (state, action) => {
 const Login = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const [state, dispatchAction] = useReducer(stateReducer, initialState);
+  const [state, dispatchAction] = useReducer(reducer, initialState);
 
   const {
     termsAccepted,
@@ -102,27 +102,19 @@ const Login = () => {
     });
   };
 
-  const requestLogin = () => {
-    // const options = {
-    //   url: "http://localhost:8000/signin",
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json;charset=UTF-8"
-    //   },
-    //   body: JSON.stringify({
-    //     username: "user1",
-    //     password: "password1"
-    //   })
-    // };
+  const requestLogin = async () => {
+    const options = {
+      url: "http://localhost:8000/signin",
+      payload: JSON.stringify({
+        username: "user1",
+        password: "password1"
+      })
+    };
 
-    // postRequest(options);
+    const response = await postRequest(options);
+    const { token } = response || {};
 
-    dispatch(loginUser(username, password));
-    dispatchAction({
-      type: "SET_LOGIN_DISABLED",
-      disabled: true
-    });
+    alert(`Token: ${token || "Oops.. no token available!"}`);
   };
 
   useEffect(() => {

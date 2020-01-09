@@ -19,12 +19,12 @@ const signIn = (req, res) => {
   // which expires 300 seconds after issue
   const token = jwt.sign({ username }, jwtKey, {
     algorithm: "HS256",
-    expiresIn: jwtExpirySeconds
+    expiresIn: jwtExpirationSeconds
   });
 
   // set the cookie as the token string, with a similar max age as the token
   // here, the max age is in milliseconds, so we multiply by 1000
-  res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 });
+  res.cookie("token", token, { maxAge: jwtExpirationSeconds * 1000 });
 
   res.status(200).json({
     success: true,

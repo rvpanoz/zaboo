@@ -16,10 +16,18 @@ export const getRequest = options => {
     .catch(error => console.error(error));
 };
 
-export const postRequest = options => {
-  const { url, ...restOptions } = options || {};
+export const postRequest = params => {
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json;charset=UTF-8"
+    }
+  };
 
-  fetch(url, restOptions).then(response => {
-    console.log(response.json().then(data => console.log(data)));
-  });
+  const { url, payload } = params || {};
+
+  return fetch(url, { body: payload, ...options }).then(response =>
+    response.json()
+  );
 };
