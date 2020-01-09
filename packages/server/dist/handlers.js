@@ -30,13 +30,13 @@ var signIn = function signIn(req, res) {
     username: username
   }, jwtKey, {
     algorithm: "HS256",
-    expiresIn: jwtExpirySeconds
+    expiresIn: jwtExpirationSeconds
   }); // set the cookie as the token string, with a similar max age as the token
   // here, the max age is in milliseconds, so we multiply by 1000
 
 
   res.cookie("token", token, {
-    maxAge: jwtExpirySeconds * 1000
+    maxAge: jwtExpirationSeconds * 1000
   });
   res.status(200).json({
     success: true,
@@ -110,7 +110,7 @@ var refresh = function refresh(req, res) {
     username: payload.username
   }, jwtKey, {
     algorithm: "HS256",
-    expiresIn: jwtExpirySeconds
+    expiresIn: jwtExpirationSeconds
   }); // Set the new token as the users `token` cookie
 
 

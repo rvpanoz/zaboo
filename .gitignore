@@ -1,0 +1,17 @@
+# Logs
+logs
+*.log
+
+# Dependency directory
+node_modules
+
+# OSX
+.DS_Store
+
+
+*.txt
+.idea
+.npm-debug.log.*
+.vscode/
+.editorconfig
+.gitconfig

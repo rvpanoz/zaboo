@@ -2,10 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app/index.js",
   "scripts": {
     "build": "babel app -d dist",
-    "start": "NODE_ENV=development npm run build && nodemon dist/server.js",
+    "start": "NODE_ENV=development npm run build && nodemon dist/index.js.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
