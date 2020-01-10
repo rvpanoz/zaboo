@@ -3,11 +3,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import CssBaseline from "@material-ui/core/CssBaseline";
+
 import Sidebar from "../Sidebar";
 import Header from "../Header";
 import Login from "../Login";
 import styles from "./styles";
-
 import { toggleSidebar } from "../../actions/ui/actions";
 
 const useStyles = makeStyles(styles);
@@ -17,7 +17,7 @@ const Layout = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const sidebarOpen = useSelector(state => state.ui.sidebar);
-  const toggleDrawer = useCallback(() => dispatch(toggleSidebar(!sidebarOpen)));
+  const toggleDrawer = () => dispatch(toggleSidebar(!sidebarOpen));
 
   return (
     <div className={classes.root}>

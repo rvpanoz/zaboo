@@ -4,26 +4,27 @@ import config from "./config";
 const { jwtKey, jwtExpirationSeconds } = config || {};
 
 const users = {
-  user1: "password1",
-  user2: "password2"
+  user1: "zoub1",
+  user2: "lun4",
+  user3: "brun0"
 };
 
-const signIn = (req, res) => {
+const authenticate = (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password || users[username] !== password) {
-    return res.status(401).end();
+    res.status(401);
+    return res.end();
   }
 
-  // create a new token with the username in the payload
-  // which expires 300 seconds after issue
+  // create a new token with the username in the payload which expires 300 seconds after issue
   const token = jwt.sign({ username }, jwtKey, {
     algorithm: "HS256",
     expiresIn: jwtExpirationSeconds
   });
 
   // set the cookie as the token string, with a similar max age as the token
-  // here, the max age is in milliseconds, so we multiply by 1000
+  // the max age is in milliseconds, so we multiply by 1000
   res.cookie("token", token, { maxAge: jwtExpirationSeconds * 1000 });
 
   res.status(200).json({
@@ -32,9 +33,10 @@ const signIn = (req, res) => {
   });
 };
 
-const welcome = (req, res) => {
-  // We can obtain the session token from the requests cookies, which come with every request
+const home = (req, res) => {
+  // obtain the session token from the requests cookies, which come with every request
   const token = req.cookies.token;
+  console.log(token);
 
   // if the cookie is not set, return an unauthorized error
   if (!token) {
@@ -54,6 +56,7 @@ const welcome = (req, res) => {
       // if the error thrown is because the JWT is unauthorized, return a 401 error
       return res.status(401).end();
     }
+
     // otherwise, return a bad request error
     return res.status(400).end();
   }
@@ -64,7 +67,7 @@ const welcome = (req, res) => {
 };
 
 const refresh = (req, res) => {
-  // (BEGIN) The code uptil this point is the same as the first part of the `welcome` route
+  // (BEGIN) The code until this point is the same as the first part of the `home` route
   const token = req.cookies.token;
 
   if (!token) {
@@ -72,6 +75,7 @@ const refresh = (req, res) => {
   }
 
   var payload;
+
   try {
     payload = jwt.verify(token, jwtKey);
   } catch (e) {
@@ -80,7 +84,7 @@ const refresh = (req, res) => {
     }
     return res.status(400).end();
   }
-  // (END) The code uptil this point is the same as the first part of the `welcome` route
+  // (END) The code until this point is the same as the first part of the `home` route
 
   // We ensure that a new token is not issued until enough time has elapsed
   // In this case, a new token will only be issued if the old token is within
@@ -102,7 +106,7 @@ const refresh = (req, res) => {
 };
 
 module.exports = {
-  signIn,
-  welcome,
+  authenticate,
+  home,
   refresh
 };

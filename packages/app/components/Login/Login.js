@@ -104,10 +104,10 @@ const Login = () => {
 
   const requestLogin = async () => {
     const options = {
-      url: "http://localhost:8000/signin",
+      url: "http://localhost:8000/authenticate",
       payload: JSON.stringify({
         username: "user1",
-        password: "password1"
+        password: "zoub1"
       })
     };
 
@@ -210,7 +210,7 @@ const Login = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={isLoginDisabled}
+            disabled={!isLoginDisabled}
             onClick={requestLogin}
           >
             Sign In
