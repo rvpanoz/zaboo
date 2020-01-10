@@ -12,7 +12,7 @@ node_modules
 packages/app/dist
 
 # parcel .cache
-*.cache
+.cache
 
 # others
 *.txt
