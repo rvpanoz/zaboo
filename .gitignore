@@ -8,7 +8,13 @@ node_modules
 # OSX
 .DS_Store
 
+# distribution
+dist
 
+# parcel .cache
+*.cache
+
+# others
 *.txt
 .idea
 .npm-debug.log.*
