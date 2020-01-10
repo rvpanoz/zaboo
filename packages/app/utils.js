@@ -8,11 +8,8 @@ export const isEmailValid = email => {
 export const getRequest = options => {
   const { url } = options || {};
 
-  fetch(url)
+  return fetch(url)
     .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
     .catch(error => console.error(error));
 };
 
@@ -27,7 +24,7 @@ export const postRequest = params => {
 
   const { url, payload } = params || {};
 
-  return fetch(url, { body: payload, ...options }).then(response =>
-    response.json()
-  );
+  return fetch(url, { body: payload, ...options })
+    .then(response => response.json())
+    .catch(error => console.error(error));
 };
