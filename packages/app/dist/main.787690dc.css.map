@@ -1,1 +1,0 @@
-{"version":3,"sources":["commons/assets/css/main.css"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA","file":"main.787690dc.css","sourceRoot":"..","sourcesContent":["body {\n  background: #fff;\n}\n\na {\n  color: #ccc;\n  text-decoration: none;\n}\n\na:hover {\n  color: #000;\n}\n"]}
