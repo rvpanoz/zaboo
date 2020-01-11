@@ -10,6 +10,7 @@ node_modules
 
 # distribution
 packages/app/dist
+packages/server/dist
 
 # parcel .cache
 .cache

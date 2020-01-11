@@ -23,7 +23,8 @@ const authenticate = (req, res) => {
   } = req.body;
 
   if (!username || !password || users[username] !== password) {
-    return res.status(401).end();
+    res.status(401);
+    return res.end();
   } // create a new token with the username in the payload which expires 300 seconds after issue
 
 
@@ -47,7 +48,8 @@ const authenticate = (req, res) => {
 
 const home = (req, res) => {
   // obtain the session token from the requests cookies, which come with every request
-  const token = req.cookies.token; // if the cookie is not set, return an unauthorized error
+  const token = req.cookies.token;
+  console.log(token); // if the cookie is not set, return an unauthorized error
 
   if (!token) {
     return res.status(401).end();

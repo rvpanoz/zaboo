@@ -5,10 +5,13 @@ export const isEmailValid = email => {
   return regEx.test(email.trim().toLowerCase());
 };
 
-export const getRequest = options => {
-  const { url } = options || {};
+export const getRequest = params => {
+  const { url } = params || {};
+  const options = {
+    method: "GET"
+  };
 
-  return fetch(url)
+  return fetch(url, options)
     .then(response => response.json())
     .catch(error => console.error(error));
 };
