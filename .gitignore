@@ -9,8 +9,7 @@ node_modules
 .DS_Store
 
 # distribution
-packages/app/dist
-packages/server/dist
+dist
 
 # parcel .cache
 .cache
