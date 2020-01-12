@@ -12,9 +12,10 @@ const uiReducer = (
         payload: { isOpen }
       } = action;
 
-      return Object.assign({}, state, {
-        sidebarOpen: !isOpen
-      });
+      return {
+        ...state,
+        sidebarOpen: isOpen
+      };
 
     default:
       return state;

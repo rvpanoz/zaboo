@@ -12,15 +12,11 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 
-import { TermsModal } from "../common/";
-import { loginUser } from "../../actions/user/actions";
-import {
-  isPasswordValid,
-  isEmailValid,
-  getRequest,
-  postRequest
-} from "../../utils";
 import styles from "./styles";
+import { TermsModal } from "../common/";
+import config from "../../config";
+import { authSuccess, authFailure } from "../../actions/user/actions";
+import { isPasswordValid, isEmailValid, postRequest } from "../../utils";
 
 const initialState = {
   termsAccepted: false,
@@ -30,6 +26,7 @@ const initialState = {
   isLoginDisabled: true
 };
 
+const { serverUrl: SERVER_URL } = config;
 const useStyles = makeStyles(styles);
 const reducer = (state, action) => {
   switch (action.type) {
@@ -104,18 +101,22 @@ const Login = () => {
 
   const requestLogin = async () => {
     const options = {
-      url: "http://localhost:8000/signin",
+      url: `${SERVER_URL}/authenticate`,
       payload: JSON.stringify({
         username: "user1",
-        password: "password1"
+        password: "zoub1"
       })
     };
 
     const response = await postRequest(options);
     const { token } = response || {};
 
-    alert(`Token: ${token || "Oops.. no token available!"}`);
+    if (token) {
+      dispatch(authSuccess(token));
+    }
   };
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     validateForm();
@@ -210,7 +211,7 @@ const Login = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={isLoginDisabled}
+            disabled={!isLoginDisabled}
             onClick={requestLogin}
           >
             Sign In

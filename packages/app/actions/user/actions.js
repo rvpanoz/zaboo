@@ -1,9 +1,16 @@
-import { USER_LOGIN } from "./types";
+import { AUTH_SUCCESS, AUTH_FAILURE, SIGNOUT } from "./types";
 
-export const loginUser = (username, password) => ({
-  type: USER_LOGIN,
+export const authSuccess = token => ({
+  type: AUTH_SUCCESS,
   payload: {
-    username,
-    password
+    token
   }
+});
+
+export const authFailure = () => ({
+  type: AUTH_FAILURE
+});
+
+export const signout = () => ({
+  type: SIGNOUT
 });

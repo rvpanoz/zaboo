@@ -1,13 +1,21 @@
 import { ofType } from "redux-observable";
-import { tap, mapTo } from "rxjs/operators";
+import { tap, switchMap, ignoreElements } from "rxjs/operators";
+import { postRequest } from "../utils";
+import config from "../config";
 
-const userLoginEpic = action$ =>
+const { serverUrl: SERVER_URL } = config;
+
+const signoutEpic = action$ =>
   action$.pipe(
-    ofType("@USER/USER_LOGIN"),
-    tap(console.log),
-    mapTo({
-      type: "@USER/test"
-    })
+    ofType("@USER/SIGNOUT"),
+    switchMap(() => {
+      const options = {
+        url: `${SERVER_URL}/signout`
+      };
+
+      return postRequest(options);
+    }),
+    ignoreElements()
   );
 
-export { userLoginEpic };
+export { signoutEpic };

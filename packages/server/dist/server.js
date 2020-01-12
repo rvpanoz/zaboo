@@ -12,16 +12,16 @@ var _handlers = require("./handlers");
 
 var _config = _interopRequireDefault(require("./config"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _ref = _config["default"] || 8000,
-    port = _ref.port;
-
-var app = (0, _express["default"])();
-app.use(_bodyParser["default"].json());
-app.use((0, _cookieParser["default"])());
-app.use((0, _cors["default"])());
-app.post("/signin", _handlers.signIn);
-app.get("/welcome", _handlers.welcome);
+const {
+  port
+} = _config.default || 8000;
+const app = (0, _express.default)();
+app.use(_bodyParser.default.json());
+app.use((0, _cookieParser.default)());
+app.use((0, _cors.default)());
+app.get("/home", _handlers.home);
+app.post("/authenticate", _handlers.authenticate);
 app.post("/refresh", _handlers.refresh);
-app.listen(port);
+app.listen(port, () => console.log(`Server is running at port: ${port}`));

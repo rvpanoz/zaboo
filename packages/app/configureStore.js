@@ -11,7 +11,16 @@ import epics from "./epics";
 // root reducer
 import rootReducer from "./reducers";
 
-const configureStore = (initialState = {}) => {
+// get token from localStorage
+const token = window.localStorage.getItem("za-token");
+
+const configureStore = (
+  initialState = {
+    user: {
+      token: token || ""
+    }
+  }
+) => {
   const epicMiddleware = createEpicMiddleware();
   const middleware = [epicMiddleware];
   const enhancers = [];
