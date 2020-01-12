@@ -28,7 +28,9 @@ const Layout = () => {
           [classes.contentShift]: sidebarOpen
         })}
       >
-        <div style={{ padding: 60 }}>Hole!</div>
+        <div style={{ padding: 60 }}>
+          <h3>Hola!</h3>
+        </div>
       </main>
     </div>
   );
