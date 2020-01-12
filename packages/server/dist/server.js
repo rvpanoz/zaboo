@@ -22,6 +22,7 @@ app.use(_bodyParser.default.json());
 app.use((0, _cookieParser.default)());
 app.use((0, _cors.default)());
 app.get("/home", _handlers.home);
+app.post("/signout", _handlers.signout);
 app.post("/authenticate", _handlers.authenticate);
-app.post("/refresh", _handlers.refresh);
+app.post("/refreshToken", _handlers.refreshToken);
 app.listen(port, () => console.log(`Server is running at port: ${port}`));
