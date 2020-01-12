@@ -4,6 +4,7 @@
 
 import { createStore, compose, applyMiddleware } from "redux";
 import { createEpicMiddleware } from "redux-observable";
+import useLocalStorage from "./useLocalStorage";
 
 // epics
 import epics from "./epics";
@@ -11,7 +12,15 @@ import epics from "./epics";
 // root reducer
 import rootReducer from "./reducers";
 
-const configureStore = (initialState = {}) => {
+const token = window.localStorage.getItem("za-token");
+
+const configureStore = (
+  initialState = {
+    user: {
+      token: token || ""
+    }
+  }
+) => {
   const epicMiddleware = createEpicMiddleware();
   const middleware = [epicMiddleware];
   const enhancers = [];

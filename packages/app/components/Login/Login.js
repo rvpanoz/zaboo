@@ -12,7 +12,6 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 
-import useLocalStorage from "../../useLocalStorage";
 import styles from "./styles";
 import { TermsModal } from "../common/";
 import config from "../../config";
@@ -70,7 +69,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [state, dispatchAction] = useReducer(reducer, initialState);
-  const [token, setValue] = useLocalStorage("zb_token");
 
   const {
     termsAccepted,
@@ -115,7 +113,6 @@ const Login = () => {
 
     if (token) {
       dispatch(authSuccess(token));
-      setValue(token);
     }
   };
 

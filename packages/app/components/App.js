@@ -1,29 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "./Layout";
-import useLocalStorage from "../useLocalStorage";
-import { authSuccess, authFailure } from "../actions/user/actions";
+import { authSuccess } from "../actions/user/actions";
+import Login from "./Login";
+
+const token = window.localStorage.getItem("za-token");
 
 const App = () => {
-  const [token] = useLocalStorage("zb_token", undefined);
+  const [isAuth, setAuth] = useState(() => Boolean(token));
   const authToken = useSelector(state => state.user.token);
   const dispatch = useDispatch();
 
-  window.addEventListener("load", event => {
-    if (authToken) {
-      return;
+  useEffect(() => {
+    const tokenValue = Boolean(authToken) ? authToken : "";
+
+    if (tokenValue) {
+      window.localStorage.setItem("za-token", tokenValue);
+      dispatch(authSuccess(tokenValue));
+    } else {
+      window.localStorage.setItem("za-token", "");
     }
 
-    if (token) {
-      dispatch(authSuccess(token));
-    }
-  });
+    setAuth(Boolean(tokenValue));
+  }, [authToken]);
 
-  return (
-    <div>
-      <Layout isAuthenticated={Boolean(authToken)} />
-    </div>
-  );
+  return <>{isAuth ? <Layout /> : <Login />}</>;
 };
 
 export default App;
