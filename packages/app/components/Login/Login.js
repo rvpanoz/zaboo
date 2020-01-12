@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
@@ -11,16 +11,12 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import { TermsModal } from "../common/";
 
-import { loginUser } from "../../actions/user/actions";
-import {
-  isPasswordValid,
-  isEmailValid,
-  getRequest,
-  postRequest
-} from "../../utils";
 import styles from "./styles";
+import { TermsModal } from "../common/";
+import config from "../../config";
+import { authSuccess, authFailure } from "../../actions/user/actions";
+import { isPasswordValid, isEmailValid, postRequest } from "../../utils";
 
 const initialState = {
   termsAccepted: false,
@@ -30,8 +26,9 @@ const initialState = {
   isLoginDisabled: true
 };
 
+const { serverUrl: SERVER_URL } = config;
 const useStyles = makeStyles(styles);
-const stateReducer = (state, action) => {
+const reducer = (state, action) => {
   switch (action.type) {
     case "SET_LOGIN_DISABLED": {
       return {
@@ -71,7 +68,7 @@ const stateReducer = (state, action) => {
 const Login = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const [state, dispatchAction] = useReducer(stateReducer, initialState);
+  const [state, dispatchAction] = useReducer(reducer, initialState);
 
   const {
     termsAccepted,
@@ -102,28 +99,24 @@ const Login = () => {
     });
   };
 
-  const requestLogin = () => {
-    // const options = {
-    //   url: "http://localhost:8000/signin",
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json;charset=UTF-8"
-    //   },
-    //   body: JSON.stringify({
-    //     username: "user1",
-    //     password: "password1"
-    //   })
-    // };
+  const requestLogin = async () => {
+    const options = {
+      url: `${SERVER_URL}/authenticate`,
+      payload: JSON.stringify({
+        username: "user1",
+        password: "zoub1"
+      })
+    };
 
-    // postRequest(options);
+    const response = await postRequest(options);
+    const { token } = response || {};
 
-    dispatch(loginUser(username, password));
-    dispatchAction({
-      type: "SET_LOGIN_DISABLED",
-      disabled: true
-    });
+    if (token) {
+      dispatch(authSuccess(token));
+    }
   };
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     validateForm();
@@ -218,7 +211,7 @@ const Login = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={isLoginDisabled}
+            disabled={!isLoginDisabled}
             onClick={requestLogin}
           >
             Sign In

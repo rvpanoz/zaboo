@@ -1,0 +1,24 @@
+# Logs
+logs
+*.log
+
+# Dependency directory
+node_modules
+
+# OSX
+.DS_Store
+
+# distribution
+packages/app/dist
+packages/server/dist
+
+# parcel .cache
+.cache
+
+# others
+*.txt
+.idea
+.npm-debug.log.*
+.vscode/
+.editorconfig
+.gitconfig

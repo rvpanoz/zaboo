@@ -5,21 +5,29 @@ export const isEmailValid = email => {
   return regEx.test(email.trim().toLowerCase());
 };
 
-export const getRequest = options => {
-  const { url } = options || {};
+export const getRequest = params => {
+  const { url } = params || {};
+  const options = {
+    method: "GET"
+  };
 
-  fetch(url)
+  return fetch(url, options)
     .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
     .catch(error => console.error(error));
 };
 
-export const postRequest = options => {
-  const { url, ...restOptions } = options || {};
+export const postRequest = params => {
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json;charset=UTF-8"
+    }
+  };
 
-  fetch(url, restOptions).then(response => {
-    console.log(response.json().then(data => console.log(data)));
-  });
+  const { url, payload } = params || {};
+
+  return fetch(url, { body: payload, ...options })
+    .then(response => response.json())
+    .catch(error => console.error(error));
 };
