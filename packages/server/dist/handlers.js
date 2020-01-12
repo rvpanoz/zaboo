@@ -47,9 +47,8 @@ const authenticate = (req, res) => {
 };
 
 const home = (req, res) => {
-  // obtain the session token from the requests cookies, which come with every request
-  const token = req.cookies.token;
-  console.log(token); // if the cookie is not set, return an unauthorized error
+  // obtain the session token req.cookies
+  const token = req.cookies.token; // if the cookie is not set, return an unauthorized error
 
   if (!token) {
     return res.status(401).end();
@@ -78,8 +77,7 @@ const home = (req, res) => {
   res.send(`Welcome ${payload.username}!`);
 };
 
-const refresh = (req, res) => {
-  // (BEGIN) The code until this point is the same as the first part of the `home` route
+const refreshToken = (req, res) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -96,8 +94,7 @@ const refresh = (req, res) => {
     }
 
     return res.status(400).end();
-  } // (END) The code until this point is the same as the first part of the `home` route
-  // We ensure that a new token is not issued until enough time has elapsed
+  } // We ensure that a new token is not issued until enough time has elapsed
   // In this case, a new token will only be issued if the old token is within
   // 30 seconds of expiry. Otherwise, return a bad request status
 
@@ -123,8 +120,16 @@ const refresh = (req, res) => {
   res.end();
 };
 
+const signout = (req, res) => {
+  // clear token
+  console.log("signout..");
+  res.cookie("token", "");
+  res.end();
+};
+
 module.exports = {
   authenticate,
+  signout,
   home,
-  refresh
+  refreshToken
 };
