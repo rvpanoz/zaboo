@@ -100,11 +100,13 @@ const Login = () => {
   };
 
   const requestLogin = async () => {
+    const { username: email, password } = state;
+
     const options = {
-      url: `${SERVER_URL}/authenticate`,
+      url: `${SERVER_URL}/users/login`,
       payload: JSON.stringify({
-        username: "user1",
-        password: "zoub1"
+        email,
+        password
       })
     };
 
@@ -115,8 +117,6 @@ const Login = () => {
       dispatch(authSuccess(token));
     }
   };
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     validateForm();
@@ -211,7 +211,7 @@ const Login = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={!isLoginDisabled}
+            disabled={isLoginDisabled}
             onClick={requestLogin}
           >
             Sign In

@@ -1,27 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import Router from "./Router";
 import Layout from "./Layout";
-import { authSuccess, signout } from "../actions/user/actions";
 import Login from "./Login";
+import Signup from "./Signup";
 
 const App = () => {
-  const [isAuth, setAuth] = useState(() => Boolean(token));
-  const authToken = useSelector(state => state.user.token);
-  const token = window.localStorage.getItem("za-token");
-
-  useEffect(() => {
-    const tokenValue = Boolean(authToken) ? authToken : "";
-
-    if (tokenValue) {
-      window.localStorage.setItem("za-token", tokenValue);
-    } else {
-      window.localStorage.setItem("za-token", "");
-    }
-
-    setAuth(Boolean(tokenValue));
-  }, [authToken]);
-
-  return <>{isAuth ? <Layout /> : <Login />}</>;
+  return (
+    <Router>
+      <Switch>
+        <Route path="/signin" component={Login} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/app" component={Layout} />
+        <Redirect to="/" />
+      </Switch>
+    </Router>
+  );
 };
 
 export default App;

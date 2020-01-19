@@ -16,12 +16,13 @@ export const getRequest = params => {
     .catch(error => console.error(error));
 };
 
-export const postRequest = params => {
+export const postRequest = (params, headers = {}) => {
   const options = {
     method: "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json;charset=UTF-8"
+      "Content-Type": "application/json;charset=UTF-8",
+      ...headers
     }
   };
 
