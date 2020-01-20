@@ -1,6 +1,11 @@
 import { combineEpics } from "redux-observable";
 import { toggleSidebarEpic } from "./uiEpics";
 import { addTaskEpic } from "./taskEpics";
-import { signoutEpic } from "./userEpics";
+import { signinEpic, signoutEpic } from "./userEpics";
 
-export default combineEpics(addTaskEpic, toggleSidebarEpic, signoutEpic);
+export default combineEpics(
+  addTaskEpic,
+  toggleSidebarEpic,
+  signinEpic,
+  signoutEpic
+);

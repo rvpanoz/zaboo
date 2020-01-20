@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -21,8 +21,8 @@ import { isPasswordValid, isEmailValid, postRequest } from "../../utils";
 const initialState = {
   termsAccepted: false,
   termsOpen: false,
-  username: "",
-  password: "",
+  username: "rvpanoz@gmail.com",
+  password: "pass1234",
   isLoginDisabled: true
 };
 
@@ -65,7 +65,8 @@ const reducer = (state, action) => {
   }
 };
 
-const Login = () => {
+const Login = ({ history }) => {
+  const authToken = useSelector(state => state.user.token);
   const dispatch = useDispatch();
   const classes = useStyles();
   const [state, dispatchAction] = useReducer(reducer, initialState);
@@ -115,8 +116,15 @@ const Login = () => {
 
     if (token) {
       dispatch(authSuccess(token));
+      history.push("/dashboard");
     }
   };
+
+  useEffect(() => {
+    if (authToken) {
+      history.push("/dashboard");
+    }
+  }, []);
 
   useEffect(() => {
     validateForm();
@@ -211,7 +219,7 @@ const Login = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={isLoginDisabled}
+            disabled={!isLoginDisabled}
             onClick={requestLogin}
           >
             Sign In

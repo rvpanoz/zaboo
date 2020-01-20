@@ -17,7 +17,8 @@ const token = window.localStorage.getItem("za-token");
 const configureStore = (
   initialState = {
     user: {
-      token: token || ""
+      auth: Boolean(token),
+      token: token ? JSON.parse(token).token : ""
     }
   }
 ) => {
