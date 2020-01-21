@@ -26,13 +26,21 @@ const renderWithRedux = (
 };
 
 describe("Login component behavior", () => {
-  let button, termsCheckBox, usernameTextField, passwordTextField, mockStore;
+  let button, termsCheckBox, usernameTextField, passwordTextField;
 
   beforeEach(() => {
-    const { container, getByTestId, store } = renderWithRedux(<Login />);
+    // https://github.com/jsdom/jsdom/issues/1724
+    global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
 
-    mockStore = store;
-    mockStore.dispatch = jest.fn();
+    const { container, getByTestId, store } = renderWithRedux(<Login />);
+    const mockSuccessResponse = {};
+    const mockJsonPromise = Promise.resolve(mockSuccessResponse);
+    const mockFetchPromise = Promise.resolve({
+      json: () => mockJsonPromise
+    });
+
+    jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
+
     button = container.getElementsByTagName("button")[0];
     termsCheckBox = getByTestId("termsCheckbox");
     usernameTextField = getByTestId("usernameTextField");
@@ -40,6 +48,9 @@ describe("Login component behavior", () => {
   });
 
   afterEach(() => {
+    global.fetch.mockClear();
+    delete global.fetch;
+
     cleanup(); // unmounts React trees that were mounted with render.
   });
 
