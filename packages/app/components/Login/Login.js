@@ -21,8 +21,8 @@ import { isPasswordValid, isEmailValid, postRequest } from "../../utils";
 const initialState = {
   termsAccepted: false,
   termsOpen: false,
-  username: "rvpanoz@gmail.com",
-  password: "pass1234",
+  username: "",
+  password: "",
   isLoginDisabled: true
 };
 
@@ -219,7 +219,7 @@ const Login = ({ history }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={!isLoginDisabled}
+            disabled={isLoginDisabled}
             onClick={requestLogin}
           >
             Sign In

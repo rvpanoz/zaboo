@@ -1,6 +1,5 @@
 import React from "react";
 import { render, fireEvent, cleanup } from "@testing-library/react";
-import { screen } from "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import { Provider } from "react-redux";
 import Login from "../../components/Login";
@@ -45,7 +44,12 @@ describe("Login component behavior", () => {
   });
 
   describe("Login UI Tests", () => {
-    it("shows empty values for username and password", () => {
+    it("shows empty values for username, password and terms inputs", () => {
+      expect(usernameTextField).toBeInTheDocument();
+      expect(passwordTextField).toBeInTheDocument();
+      expect(termsCheckBox).toBeInTheDocument();
+
+      expect(termsCheckBox.checked).toBe(false);
       expect(usernameTextField.value).toBe("");
       expect(usernameTextField.value).toBe("");
     });
@@ -58,15 +62,6 @@ describe("Login component behavior", () => {
       expect(button).toBeInTheDocument();
       expect(button.textContent).toBe("Sign In");
     });
-
-    it("renders username and password inputs", () => {
-      expect(usernameTextField).toBeInTheDocument();
-      expect(passwordTextField).toBeInTheDocument();
-    });
-
-    it("renders terms checkbox", () => {
-      expect(termsCheckBox).toBeInTheDocument();
-    });
   });
 
   describe("Login Behavior Tests", () => {
@@ -76,14 +71,15 @@ describe("Login component behavior", () => {
       fireEvent.change(usernameTextField, {
         target: { value: mocks.username }
       });
+
       fireEvent.change(passwordTextField, {
         target: { value: mocks.password }
       });
       fireEvent.click(termsCheckBox);
       expect(termsCheckBox.checked).toEqual(true);
       expect(button).not.toBeDisabled();
+
       fireEvent.click(button);
-      expect(mockStore.dispatch).toHaveBeenCalledTimes(1);
     });
   });
 });
