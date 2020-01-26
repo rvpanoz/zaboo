@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -11,23 +11,21 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-
+import { requestSignin } from "actions/user/actions";
+import { isPasswordValid, isEmailValid } from "libraries/validators";
+import { TermsModal } from "../common";
 import styles from "./styles";
-import { TermsModal } from "../common/";
-import config from "../../config";
-import { authSuccess, authFailure } from "../../actions/user/actions";
-import { isPasswordValid, isEmailValid, postRequest } from "../../utils";
 
 const initialState = {
+  isLoginDisabled: true,
   termsAccepted: false,
   termsOpen: false,
   username: "",
-  password: "",
-  isLoginDisabled: true
+  password: ""
 };
 
-const { serverUrl: SERVER_URL } = config;
 const useStyles = makeStyles(styles);
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_LOGIN_DISABLED": {
@@ -65,8 +63,7 @@ const reducer = (state, action) => {
   }
 };
 
-const Login = ({ history }) => {
-  const authToken = useSelector(state => state.user.token);
+const Login = ({ history, isAuthed = false }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [state, dispatchAction] = useReducer(reducer, initialState);
@@ -100,29 +97,23 @@ const Login = ({ history }) => {
     });
   };
 
-  const requestLogin = async () => {
+  const requestLogin = () => {
     const { username: email, password } = state;
 
-    const options = {
-      url: `${SERVER_URL}/users/login`,
-      payload: JSON.stringify({
+    dispatch(
+      requestSignin({
         email,
         password
       })
-    };
+    );
 
-    const response = await postRequest(options);
-    const { token } = response || {};
-
-    if (token) {
-      dispatch(authSuccess(token));
-      history.push("/dashboard");
-    }
+    // ???
+    // history.push("/dashboard");
   };
 
   useEffect(() => {
-    if (authToken) {
-      history.push("/dashboard");
+    if (isAuthed) {
+      return history.push("/dashboard");
     }
   }, []);
 
