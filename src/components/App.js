@@ -1,6 +1,5 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { useSelector } from "react-redux";
 import AuthorizedRoute from "./AuthorizedRoute";
 import Router from "./Router";
 import Layout from "./Layout";
@@ -9,8 +8,6 @@ import Signup from "./Signup";
 import NotFound from "./NotFound";
 
 const App = () => {
-  const isAuthed = useSelector(state => state.user.auth);
-
   return (
     <Router>
       <Switch>

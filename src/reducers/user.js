@@ -1,36 +1,28 @@
-import { AUTH_SUCCESS, AUTH_FAILURE, SIGNOUT } from "../actions/user/types";
+import createReducer from "./createReducer";
+import { AUTH_SUCCESS, AUTH_FAILURE, SIGNOUT } from "actions/user/types";
 
-const userReducer = (
-  state = {
-    auth: false,
-    token: ""
-  },
-  action
-) => {
-  const { token } = action.payload;
-
-  switch (action.type) {
-    case AUTH_SUCCESS:
-      return {
-        ...state,
-        auth: Boolean(token),
-        token
-      };
-    case AUTH_FAILURE:
-      return {
-        ...state,
-        auth: false,
-        token: ""
-      };
-    case SIGNOUT:
-      return {
-        ...state,
-        auth: false,
-        token: ""
-      };
-    default:
-      return state;
-  }
+const initialState = {
+  auth: false,
+  token: ""
 };
 
-export default userReducer;
+const handlers = {
+  [AUTH_SUCCESS]: (state, { payload: { token } }) => ({
+    ...state,
+    auth: Boolean(token),
+    token
+  }),
+  [AUTH_FAILURE]: state => ({
+    ...state,
+    auth: false,
+    token: ""
+  }),
+  [SIGNOUT]: state => ({
+    ...state,
+    auth: false,
+    token: ""
+  })
+};
+
+const reducer = createReducer(initialState, handlers);
+export default reducer;

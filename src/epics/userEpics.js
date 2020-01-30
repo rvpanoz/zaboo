@@ -11,6 +11,7 @@ import {
 } from "rxjs/operators";
 import { postRequest } from "libraries/http";
 import config from "config";
+import { push } from "connected-react-router";
 
 const { serverUrl: SERVER_URL } = config;
 
@@ -62,15 +63,8 @@ const signinEpic = action$ =>
       const { token } = payload;
 
       localStorage.setItem("za-token", JSON.stringify({ token }));
-
-      return {
-        type: "@@router/LOCATION_CHANGE",
-        payload: {
-          location: "/"
-        }
-      };
-    })
-    // ignoreElements()
+    }),
+    mapTo(push("/"))
   );
 
 const signoutEpic = (action$, state$) => {

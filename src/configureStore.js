@@ -25,21 +25,15 @@ const configureStore = (
   }
 ) => {
   const epicMiddleware = createEpicMiddleware();
-  const middleware = [epicMiddleware];
-  const enhancers = [];
+  const middlewares = [epicMiddleware];
+  const composeEnhancer =
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-  // if redux DevTools Extension is installed use it, otherwise use redux compose
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    : compose;
-
-  // apply middleware & compose enhancers
-  // for dispatching history actions use routerMiddleware
-  enhancers.push(applyMiddleware(routerMiddleware(history), ...middleware));
-  const enhancer = composeEnhancers(...enhancers);
-
-  // store creation
-  const store = createStore(rootReducer(history), initialState, enhancer);
+  const store = createStore(
+    rootReducer(history),
+    initialState,
+    composeEnhancer(applyMiddleware(routerMiddleware(history), ...middlewares))
+  );
 
   epicMiddleware.run(epics);
 
