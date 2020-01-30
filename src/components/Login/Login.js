@@ -17,11 +17,11 @@ import { TermsModal } from "../common";
 import styles from "./styles";
 
 const initialState = {
-  isLoginDisabled: true,
-  termsAccepted: false,
+  isLoginDisabled: false,
+  termsAccepted: true,
   termsOpen: false,
-  username: "",
-  password: ""
+  username: "rvpanoz@gmail.com",
+  password: "pass1234"
 };
 
 const useStyles = makeStyles(styles);
@@ -63,7 +63,7 @@ const reducer = (state, action) => {
   }
 };
 
-const Login = ({ history, isAuthed = false }) => {
+const Login = ({ history, isAuthed }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [state, dispatchAction] = useReducer(reducer, initialState);
