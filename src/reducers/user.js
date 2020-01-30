@@ -7,10 +7,10 @@ const userReducer = (
   },
   action
 ) => {
+  const { token } = action.payload;
+
   switch (action.type) {
     case AUTH_SUCCESS:
-      const { token } = action.payload;
-
       return {
         ...state,
         auth: Boolean(token),

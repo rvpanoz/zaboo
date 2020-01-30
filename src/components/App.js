@@ -1,5 +1,6 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 import AuthorizedRoute from "./AuthorizedRoute";
 import Router from "./Router";
 import Layout from "./Layout";
@@ -8,17 +9,18 @@ import Signup from "./Signup";
 import NotFound from "./NotFound";
 
 const App = () => {
+  const isAuthed = useSelector(state => state.user.auth);
+
   return (
     <Router>
       <Switch>
         <Route path="/signin" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/404" component={NotFound} />
-        <AuthorizedRoute path="/dashboard" component={Layout} />
+        <AuthorizedRoute path="/" component={Layout} />
         <Redirect to="404" />
       </Switch>
     </Router>
   );
 };
-
 export default App;

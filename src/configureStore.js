@@ -4,6 +4,8 @@
 
 import { createStore, compose, applyMiddleware } from "redux";
 import { createEpicMiddleware } from "redux-observable";
+import { routerMiddleware } from "connected-react-router";
+import { createBrowserHistory } from "history";
 
 // epics
 import epics from "./epics";
@@ -32,15 +34,17 @@ const configureStore = (
     : compose;
 
   // apply middleware & compose enhancers
-  enhancers.push(applyMiddleware(...middleware));
+  // for dispatching history actions use routerMiddleware
+  enhancers.push(applyMiddleware(routerMiddleware(history), ...middleware));
   const enhancer = composeEnhancers(...enhancers);
 
   // store creation
-  const store = createStore(rootReducer, initialState, enhancer);
+  const store = createStore(rootReducer(history), initialState, enhancer);
 
   epicMiddleware.run(epics);
 
   return store;
 };
 
+export const history = createBrowserHistory();
 export default configureStore;

@@ -6,7 +6,8 @@ import {
   switchMap,
   map,
   takeUntil,
-  catchError
+  catchError,
+  mapTo
 } from "rxjs/operators";
 import { postRequest } from "libraries/http";
 import config from "config";
@@ -57,12 +58,19 @@ const requestSigninEpic = action$ =>
 const signinEpic = action$ =>
   action$.pipe(
     ofType("@USER/AUTH_SUCCESS"),
-    tap(({ payload }) => {
+    map(({ payload }) => {
       const { token } = payload;
 
       localStorage.setItem("za-token", JSON.stringify({ token }));
-    }),
-    ignoreElements()
+
+      return {
+        type: "@@router/LOCATION_CHANGE",
+        payload: {
+          location: "/"
+        }
+      };
+    })
+    // ignoreElements()
   );
 
 const signoutEpic = (action$, state$) => {
