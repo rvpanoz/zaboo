@@ -14,11 +14,10 @@ const App = () => {
         <Route path="/signin" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/404" component={NotFound} />
-        <AuthorizedRoute path="/dashboard" component={Layout} />
+        <AuthorizedRoute path="/" component={Layout} />
         <Redirect to="404" />
       </Switch>
     </Router>
   );
 };
-
 export default App;

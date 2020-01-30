@@ -1,3 +1,5 @@
+const fetch = global.fetch;
+
 /**
  * HTTP GET
  * @param {*} params
@@ -10,7 +12,9 @@ export const getRequest = params => {
 
   return fetch(url, options)
     .then(response => response.json())
-    .catch(error => console.error(error));
+    .catch(error => {
+      throw error;
+    });
 };
 
 /**
@@ -32,5 +36,7 @@ export const postRequest = (params, headers = {}) => {
 
   return fetch(url, { body: payload, ...options })
     .then(response => response.json())
-    .catch(error => console.error(error));
+    .catch(error => {
+      throw error;
+    });
 };

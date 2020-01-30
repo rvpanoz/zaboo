@@ -1,25 +1,20 @@
-import { TOGGLE_SIDEBAR } from "../actions/ui/types";
+import { TOGGLE_SIDEBAR } from "actions/ui/types";
+import createReducer from "./createReducer";
 
-const uiReducer = (
-  state = {
-    sidebarOpen: false
-  },
-  action
-) => {
-  switch (action.type) {
-    case TOGGLE_SIDEBAR:
-      const {
-        payload: { isOpen }
-      } = action;
+const initialState = {
+  sidebarOpen: false
+};
 
-      return {
-        ...state,
-        sidebarOpen: isOpen
-      };
+const handlers = {
+  [TOGGLE_SIDEBAR]: (state, { payload }) => {
+    const { isOpen } = payload;
 
-    default:
-      return state;
+    return {
+      ...state,
+      sidebarOpen: isOpen
+    };
   }
 };
 
-export default uiReducer;
+const reducer = createReducer(initialState, handlers);
+export default reducer;
