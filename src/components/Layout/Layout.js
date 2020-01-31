@@ -4,10 +4,10 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
+import { toggleSidebar } from "actions/ui/actions";
 import Sidebar from "../Sidebar";
 import Header from "../Header";
 import styles from "./styles";
-import { toggleSidebar } from "../../actions/ui/actions";
 
 const useStyles = makeStyles(styles);
 

@@ -81,5 +81,10 @@
     "reducers": "./src/reducers",
     "commons": "./src/commons",
     "libraries": "./src/libraries"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "actions(.*)$": "<rootDir>/src/actions/$1"
+    }
   }
 }

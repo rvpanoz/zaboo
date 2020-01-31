@@ -63,7 +63,7 @@ const reducer = (state, action) => {
   }
 };
 
-const Login = ({ history, isAuthed }) => {
+const Login = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [state, dispatchAction] = useReducer(reducer, initialState);
@@ -106,16 +106,7 @@ const Login = ({ history, isAuthed }) => {
         password
       })
     );
-
-    // ???
-    // history.push("/dashboard");
   };
-
-  useEffect(() => {
-    if (isAuthed) {
-      return history.push("/dashboard");
-    }
-  }, []);
 
   useEffect(() => {
     validateForm();

@@ -2,7 +2,7 @@ import React from "react";
 import { render, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { Provider } from "react-redux";
-import Login from "components/Login";
+import Login from "../../components/Login";
 import { ConnectedRouter } from "connected-react-router";
 import { createMemoryHistory } from "history";
 import configureStore from "../../configureStore";
