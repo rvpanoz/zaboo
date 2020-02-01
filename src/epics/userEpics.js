@@ -1,6 +1,5 @@
 import { ofType } from "redux-observable";
-import { of } from "rxjs";
-import { tap, ignoreElements, mergeMap, map, mapTo } from "rxjs/operators";
+import { map, mapTo } from "rxjs/operators";
 import { httpPost } from "./operators";
 
 import config from "config";

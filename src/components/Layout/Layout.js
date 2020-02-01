@@ -5,8 +5,9 @@ import clsx from "clsx";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 import { toggleSidebar } from "actions/ui/actions";
-import Sidebar from "../Sidebar";
-import Header from "../Header";
+import Sidebar from "components/Sidebar";
+import Header from "components/Header";
+import Dashboard from "components/Dashboard";
 import styles from "./styles";
 
 const useStyles = makeStyles(styles);
@@ -29,7 +30,7 @@ const Layout = () => {
         })}
       >
         <div style={{ padding: 60 }}>
-          <h3>Hola!</h3>
+          <Dashboard />
         </div>
       </main>
     </div>
