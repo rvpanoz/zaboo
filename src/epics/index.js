@@ -1,4 +1,16 @@
 import { combineEpics } from "redux-observable";
-import { requestSigninEpic, signinEpic, signoutEpic } from "./userEpics";
+import {
+  requestSigninEpic,
+  requestSignoutEpic,
+  signinEpic,
+  signoutEpic
+} from "./userEpics";
+import { postRequestEpic } from "./system/httpEpics";
 
-export default combineEpics(requestSigninEpic, signinEpic, signoutEpic);
+export default combineEpics(
+  postRequestEpic,
+  requestSigninEpic,
+  requestSignoutEpic,
+  signinEpic,
+  signoutEpic
+);
