@@ -16,8 +16,13 @@ const Layout = () => {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const sidebarOpen = useSelector(state => state.ui.sidebarOpen);
-  const toggleDrawer = () => dispatch(toggleSidebar(!sidebarOpen));
+  const sidebarOpen = useSelector(({ ui }) => ui.sidebarOpen);
+  const toggleDrawer = () =>
+    dispatch(
+      toggleSidebar({
+        isOpen: !sidebarOpen
+      })
+    );
 
   return (
     <div className={classes.root}>

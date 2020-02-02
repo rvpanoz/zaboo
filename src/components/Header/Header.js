@@ -9,7 +9,7 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
-import { signout } from "actions/user/actions";
+import { requestSignout } from "actions/user/actions";
 import styles from "./styles";
 
 const useStyles = makeStyles(styles);
@@ -17,7 +17,7 @@ const useStyles = makeStyles(styles);
 const Header = ({ sidebarOpen, toggleDrawer }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const signoutUser = () => dispatch(signout());
+  const signoutUser = () => dispatch(requestSignout());
 
   return (
     <div className={classes.root}>

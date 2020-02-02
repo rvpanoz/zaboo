@@ -1,3 +1,2 @@
-export const ADD_CATEGORY = "@UI/ADD_CATEGORY";
 export const SWITCH_THEME = "@UI/SWITCH_THEME";
 export const TOGGLE_SIDEBAR = "@UI/TOGGLE_SIDEBAR";

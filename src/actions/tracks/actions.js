@@ -1,11 +1,5 @@
 import { FETCH_TRACKS, UPDATE_TRACKS } from "./types";
+import actionCreator from "../actionCreator";
 
-export const fetchTracks = ({ payload }) => ({
-  type: FETCH_TRACKS,
-  payload
-});
-
-export const UpdateTracks = ({ payload }) => ({
-  type: UPDATE_TRACKS,
-  payload
-});
+export const fetchTracks = actionCreator(FETCH_TRACKS);
+export const updateTracks = actionCreator(UPDATE_TRACKS);

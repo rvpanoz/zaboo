@@ -1,16 +1,23 @@
 import { ofType } from "redux-observable";
-import { map, mapTo } from "rxjs/operators";
+import { map, mapTo, tap } from "rxjs/operators";
 import { httpPost } from "./operators";
-
 import config from "config";
 import { push } from "connected-react-router";
-
 import { postRequest } from "libraries/http";
+import {
+  requestSignin,
+  authSuccess,
+  authFailure,
+  requestSignout,
+  signoutSuccess,
+  signoutFailure
+} from "actions/user/actions";
+
 const { serverUrl: SERVER_URL } = config;
 
 const requestSigninEpic = action$ =>
   action$.pipe(
-    ofType("@USER/REQUEST_SIGNIN"),
+    ofType(requestSignin.type),
     map(({ payload }) => {
       const options = {
         url: `${SERVER_URL}/users/login`,
@@ -21,14 +28,14 @@ const requestSigninEpic = action$ =>
     }),
     httpPost({
       initiator: options => postRequest(options),
-      successAction: "@USER/AUTH_SUCCESS",
-      failureAction: "@USER/AUTH_FAILURE"
+      successAction: authSuccess.type,
+      failureAction: authFailure.type
     })
   );
 
 const signinEpic = action$ =>
   action$.pipe(
-    ofType("@USER/AUTH_SUCCESS"),
+    ofType(authSuccess.type),
     map(({ payload }) => {
       const { token } = payload;
 
@@ -43,7 +50,7 @@ const requestSignoutEpic = (action$, state$) => {
   } = state$.value;
 
   return action$.pipe(
-    ofType("@USER/SIGNOUT"),
+    ofType(requestSignout.type),
     map(() => {
       const options = {
         url: `${SERVER_URL}/users/logout`
@@ -56,15 +63,15 @@ const requestSignoutEpic = (action$, state$) => {
         postRequest(options, {
           Authorization: `Bearer ${token}`
         }),
-      successAction: "@USER/SIGNOUT_SUCCESS",
-      failureAction: "@USER/SIGNOUT_FAILURE"
+      successAction: signoutSuccess.type,
+      failureAction: signoutFailure.type
     })
   );
 };
 
 const signoutEpic = action$ =>
   action$.pipe(
-    ofType("@USER/SIGNOUT_SUCCESS"),
+    ofType(signoutSuccess.type),
     map(() => {
       localStorage.setItem("za-token", "");
     }),
