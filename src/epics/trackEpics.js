@@ -1,7 +1,8 @@
 import { ofType } from "redux-observable";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import { getRequest } from "libraries/http";
 import { httpPost } from "./operators";
+import { updateTracks } from "actions/tracks/actions";
 
 const fetchTracksEpic = action$ =>
   action$.pipe(
@@ -20,7 +21,8 @@ const fetchTracksEpic = action$ =>
       initiator: options => getRequest(options),
       successAction: "@TRACKS/FETCH_SUCCESS",
       failureAction: "@TRACKS/FETCH_FAILURE"
-    })
+    }),
+    tap(console.log)
   );
 
 const fetchTracksSuccessEpic = action$ =>

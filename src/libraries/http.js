@@ -4,14 +4,17 @@ const fetch = global.fetch;
  * HTTP GET
  * @param {*} params
  */
+
+const objectToQueryString = obj =>
+  Object.keys(obj)
+    .map(key => key + "=" + obj[key])
+    .join("&");
+
 export const getRequest = params => {
   const { url, ...rest } = params || {};
-  const options = {
-    method: "GET",
-    ...rest
-  };
+  const fetchUrl = url + objectToQueryString(rest);
 
-  return fetch(url, options)
+  return fetch(fetchUrl)
     .then(response => response.json())
     .catch(error => {
       throw error;
