@@ -1,4 +1,18 @@
 import { combineEpics } from "redux-observable";
-import { requestSigninEpic, signinEpic, signoutEpic } from "./userEpics";
+import {
+  requestSigninEpic,
+  requestSignoutEpic,
+  signinEpic,
+  signoutEpic
+} from "./userEpics";
 
-export default combineEpics(requestSigninEpic, signinEpic, signoutEpic);
+import { fetchTracksEpic, fetchTracksSuccessEpic } from "./trackEpics";
+
+export default combineEpics(
+  fetchTracksEpic,
+  fetchTracksSuccessEpic,
+  requestSigninEpic,
+  requestSignoutEpic,
+  signinEpic,
+  signoutEpic
+);

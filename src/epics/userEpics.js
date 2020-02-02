@@ -1,64 +1,41 @@
 import { ofType } from "redux-observable";
-import { of, from } from "rxjs";
-import {
-  tap,
-  ignoreElements,
-  switchMap,
-  map,
-  takeUntil,
-  catchError,
-  mapTo
-} from "rxjs/operators";
-import { postRequest } from "libraries/http";
+import { map, mapTo, tap } from "rxjs/operators";
+import { httpPost } from "./operators";
 import config from "config";
 import { push } from "connected-react-router";
+import { postRequest } from "libraries/http";
+import {
+  requestSignin,
+  authSuccess,
+  authFailure,
+  requestSignout,
+  signoutSuccess,
+  signoutFailure
+} from "actions/user/actions";
 
 const { serverUrl: SERVER_URL } = config;
 
 const requestSigninEpic = action$ =>
   action$.pipe(
-    ofType("@USER/REQUEST_SIGNIN"),
-    switchMap(({ payload }) => {
-      const { email, password } = payload;
+    ofType(requestSignin.type),
+    map(({ payload }) => {
       const options = {
         url: `${SERVER_URL}/users/login`,
-        payload: JSON.stringify({
-          email,
-          password
-        })
+        payload: JSON.stringify(payload)
       };
 
-      return from(postRequest(options)).pipe(
-        map(response => {
-          const { token } = response;
-
-          if (token) {
-            return {
-              type: "@USER/AUTH_SUCCESS",
-              payload: {
-                token
-              }
-            };
-          }
-
-          return {
-            type: "@USER/AUTH_FAILURE"
-          };
-        }),
-        takeUntil(action$.pipe(ofType("@USER/AUTH_CANCEL"))),
-        catchError(err =>
-          of({
-            type: "@USER/AUTH_ERROR",
-            payload: err
-          })
-        )
-      );
+      return options;
+    }),
+    httpPost({
+      initiator: options => postRequest(options),
+      successAction: authSuccess.type,
+      failureAction: authFailure.type
     })
   );
 
 const signinEpic = action$ =>
   action$.pipe(
-    ofType("@USER/AUTH_SUCCESS"),
+    ofType(authSuccess.type),
     map(({ payload }) => {
       const { token } = payload;
 
@@ -67,30 +44,38 @@ const signinEpic = action$ =>
     mapTo(push("/"))
   );
 
-const signoutEpic = (action$, state$) => {
+const requestSignoutEpic = (action$, state$) => {
   const {
     user: { token }
   } = state$.value;
 
   return action$.pipe(
-    ofType("@USER/SIGNOUT"),
-    switchMap(() =>
-      of(
-        postRequest(
-          {
-            url: `${SERVER_URL}/users/logout`
-          },
-          {
-            Authorization: `Bearer ${token}`
-          }
-        )
-      )
-    ),
-    tap(() => {
-      localStorage.setItem("za-token", "");
+    ofType(requestSignout.type),
+    map(() => {
+      const options = {
+        url: `${SERVER_URL}/users/logout`
+      };
+
+      return options;
     }),
-    ignoreElements()
+    httpPost({
+      initiator: options =>
+        postRequest(options, {
+          Authorization: `Bearer ${token}`
+        }),
+      successAction: signoutSuccess.type,
+      failureAction: signoutFailure.type
+    })
   );
 };
 
-export { requestSigninEpic, signinEpic, signoutEpic };
+const signoutEpic = action$ =>
+  action$.pipe(
+    ofType(signoutSuccess.type),
+    map(() => {
+      localStorage.setItem("za-token", "");
+    }),
+    mapTo(push("/signin"))
+  );
+
+export { requestSigninEpic, requestSignoutEpic, signinEpic, signoutEpic };

@@ -1,20 +1,5 @@
-import { SWITCH_THEME, ADD_CATEGORY, TOGGLE_SIDEBAR } from "./types";
+import { SWITCH_THEME, TOGGLE_SIDEBAR } from "./types";
+import actionCreator from "../actionCreator";
 
-export const switchTheme = theme => ({
-  type: SWITCH_THEME,
-  payload: {
-    theme
-  }
-});
-
-export const addCategory = payload => ({
-  type: ADD_CATEGORY,
-  payload
-});
-
-export const toggleSidebar = isOpen => ({
-  type: TOGGLE_SIDEBAR,
-  payload: {
-    isOpen
-  }
-});
+export const switchTheme = actionCreator(SWITCH_THEME);
+export const toggleSidebar = actionCreator(TOGGLE_SIDEBAR);
