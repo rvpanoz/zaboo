@@ -6,7 +6,11 @@ import {
   signoutEpic
 } from "./userEpics";
 
+import { fetchTracksEpic, fetchTracksSuccessEpic } from "./trackEpics";
+
 export default combineEpics(
+  fetchTracksEpic,
+  fetchTracksSuccessEpic,
   requestSigninEpic,
   requestSignoutEpic,
   signinEpic,

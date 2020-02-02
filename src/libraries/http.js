@@ -5,9 +5,10 @@ const fetch = global.fetch;
  * @param {*} params
  */
 export const getRequest = params => {
-  const { url } = params || {};
+  const { url, ...rest } = params || {};
   const options = {
-    method: "GET"
+    method: "GET",
+    ...rest
   };
 
   return fetch(url, options)
