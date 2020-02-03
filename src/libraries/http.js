@@ -16,7 +16,9 @@ export const getRequest = params => {
 
   return fetch(fetchUrl)
     .then(response => response.json())
-    .catch(error => error);
+    .catch(error => {
+      throw error;
+    });
 };
 
 /**
@@ -38,5 +40,8 @@ export const postRequest = ({ headers = {}, ...params }) => {
 
   return fetch(url, { body: payload, ...options })
     .then(response => response.json())
-    .catch(error => error);
+    .catch(error => {
+      console.log(typeof error, JSON.parse(error));
+      throw error;
+    });
 };

@@ -16,9 +16,7 @@ export const httpPost = ({ initiator, successActions, failureActions }) =>
     switchMap(options =>
       from(initiator(options)).pipe(
         mergeMap((user, token) => {
-          if (user && user.error) {
-            throw user.error;
-          }
+          console.log(user, token);
 
           return from(successActions).pipe(
             concatMap(action => {
@@ -31,16 +29,17 @@ export const httpPost = ({ initiator, successActions, failureActions }) =>
               });
             })
           );
-        }),
-        catchError(err => {
-          return of({
-            type: failureActions[0],
-            payload: {
-              message: err
-            }
-          });
         })
       )
     ),
+    catchError(err => {
+      console.log(err.toString());
+      return of({
+        type: failureActions[0],
+        payload: {
+          message: err.toString()
+        }
+      });
+    }),
     tap(console.log)
   );
