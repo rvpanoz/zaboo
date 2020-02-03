@@ -1,5 +1,11 @@
 import { from, of, pipe } from "rxjs";
-import { switchMap, concatMap, catchError, mergeMap } from "rxjs/operators";
+import {
+  switchMap,
+  concatMap,
+  catchError,
+  mergeMap,
+  tap
+} from "rxjs/operators";
 
 /**
  *
@@ -9,26 +15,32 @@ export const httpPost = ({ initiator, successActions, failureActions }) =>
   pipe(
     switchMap(options =>
       from(initiator(options)).pipe(
-        mergeMap(response =>
-          from(successActions).pipe(
+        mergeMap((user, token) => {
+          if (user && user.error) {
+            throw user.error;
+          }
+
+          return from(successActions).pipe(
             concatMap(action => {
               return of({
                 type: action,
                 payload: {
-                  ...response
+                  user,
+                  token
                 }
               });
             })
-          )
-        )
+          );
+        }),
+        catchError(err => {
+          return of({
+            type: failureActions[0],
+            payload: {
+              message: err
+            }
+          });
+        })
       )
     ),
-    catchError(err =>
-      of({
-        type: failureActions[0],
-        payload: {
-          message: err
-        }
-      })
-    )
+    tap(console.log)
   );

@@ -18,9 +18,9 @@ import TermsModal from "components/common/TermsModal";
 import styles from "./styles";
 
 const initialState = {
-  isLoginDisabled: false,
-  termsAccepted: true,
   termsOpen: false,
+  isLoginDisabled: true,
+  termsAccepted: true,
   username: "rvpanoz@gmail.com",
   password: "pass1234"
 };

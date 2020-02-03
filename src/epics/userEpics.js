@@ -1,12 +1,12 @@
 import { ofType } from "redux-observable";
-import { map, mapTo } from "rxjs/operators";
+import { map, mapTo, delay } from "rxjs/operators";
 import { httpPost } from "./operators";
-import config from "config";
 import { push } from "connected-react-router";
 import { postRequest } from "libraries/http";
 import { requestSignin, requestSignout } from "actions/user/actions";
 import { systemMessage } from "actions/system/actions";
 import { toggleLoader } from "actions/ui/actions";
+import config from "config";
 
 const { serverUrl: SERVER_URL } = config;
 
@@ -36,6 +36,7 @@ const requestSigninSuccessEpic = action$ =>
 
       localStorage.setItem("za-token", JSON.stringify({ token }));
     }),
+    delay(1000),
     mapTo(push("/"))
   );
 
@@ -63,7 +64,7 @@ const requestSignoutEpic = (action$, state$) => {
     ofType(requestSignout.type),
     map(() => {
       const options = {
-        url: `${SERVER_URL}/users/logout`
+        url: `${SERVER_URL}/users/logoutall`
       };
 
       return {

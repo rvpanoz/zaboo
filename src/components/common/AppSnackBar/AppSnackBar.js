@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-// import Button from "@material-ui/core/Button";
+import { string } from "prop-types";
+import { useDispatch } from "react-redux";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
+import { clearSystemMessage } from "actions/system/actions";
 
 const Alert = props => <MuiAlert elevation={6} variant="filled" {...props} />;
 
@@ -16,6 +18,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AppSnackBar = ({ severity, message }) => {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [open, setOpen] = useState(Boolean(message));
 
@@ -24,6 +27,7 @@ const AppSnackBar = ({ severity, message }) => {
       return;
     }
 
+    dispatch(clearSystemMessage());
     setOpen(false);
   };
 
@@ -42,4 +46,8 @@ AppSnackBar.defaultProps = {
   severity: "default"
 };
 
+AppSnackBar.propTypes = {
+  message: string.isRequired,
+  severity: string
+};
 export default AppSnackBar;
