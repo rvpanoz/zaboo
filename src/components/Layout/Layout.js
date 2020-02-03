@@ -29,7 +29,7 @@ const Layout = () => {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Header sidebarOpen={sidebarOpen} toggleDrawer={toggleDrawer} />
+      <Header toggleDrawer={toggleDrawer} />
       <Sidebar open={sidebarOpen} theme={theme} toggleDrawer={toggleDrawer} />
       <main
         className={clsx(classes.content, {
