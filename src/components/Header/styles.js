@@ -7,7 +7,7 @@ const styles = theme => ({
     flexGrow: 0
   },
   appBar: {
-    backgroundColor: "#3367d6",
+    backgroundColor: "#e60000",
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen

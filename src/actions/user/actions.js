@@ -1,16 +1,5 @@
-import {
-  REQUEST_SIGNIN,
-  AUTH_SUCCESS,
-  AUTH_FAILURE,
-  REQUEST_SIGNOUT,
-  SIGNOUT_SUCCESS,
-  SIGNOUT_FAILURE
-} from "./types";
-import actionCreator from "../actionCreator";
+import { REQUEST_SIGNIN, REQUEST_SIGNOUT } from "./types";
+import { requestActionCreator } from "actions/actionCreator";
 
-export const requestSignin = actionCreator(REQUEST_SIGNIN);
-export const authSuccess = actionCreator(AUTH_SUCCESS);
-export const authFailure = actionCreator(AUTH_FAILURE);
-export const requestSignout = actionCreator(REQUEST_SIGNOUT);
-export const signoutSuccess = actionCreator(SIGNOUT_SUCCESS);
-export const signoutFailure = actionCreator(SIGNOUT_FAILURE);
+export const requestSignin = requestActionCreator(REQUEST_SIGNIN);
+export const requestSignout = requestActionCreator(REQUEST_SIGNOUT);
