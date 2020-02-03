@@ -6,6 +6,7 @@ import { push } from "connected-react-router";
 import { postRequest } from "libraries/http";
 import { requestSignin, requestSignout } from "actions/user/actions";
 import { systemMessage } from "actions/system/actions";
+import { toggleLoader } from "actions/ui/actions";
 
 const { serverUrl: SERVER_URL } = config;
 
@@ -24,7 +25,10 @@ const requestSigninEpic = action$ =>
       initiator: postRequest,
       successAction: requestSignin.success,
       failureAction: requestSignin.failure
-    })
+    }),
+    map(() => ({
+      type: toggleLoader.type
+    }))
   );
 
 const requestSigninSuccessEpic = action$ =>
