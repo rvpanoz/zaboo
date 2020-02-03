@@ -1,24 +1,17 @@
 import { ofType } from "redux-observable";
-import { map, mapTo, tap, ignoreElements } from "rxjs/operators";
+import { map, mapTo, tap } from "rxjs/operators";
 import { httpPost } from "./operators";
 import config from "config";
 import { push } from "connected-react-router";
 import { postRequest } from "libraries/http";
-import {
-  requestSignin,
-  requestSignout,
-  signoutSuccess,
-  signoutFailure
-} from "actions/user/actions";
+import { requestSignin, requestSignout } from "actions/user/actions";
 
 const { serverUrl: SERVER_URL } = config;
 
 const requestSigninEpic = action$ =>
   action$.pipe(
     ofType(requestSignin.type),
-    tap(console.log),
     map(({ payload }) => {
-      debugger;
       const options = {
         url: `${SERVER_URL}/users/login`,
         payload: JSON.stringify(payload)
@@ -73,15 +66,15 @@ const requestSignoutEpic = (action$, state$) => {
         postRequest(options, {
           Authorization: `Bearer ${token}`
         }),
-      successAction: signoutSuccess.type,
-      failureAction: signoutFailure.type
+      successAction: requestSignout.success,
+      failureAction: requestSignout.failure
     })
   );
 };
 
 const requestSignoutSuccessEpic = action$ =>
   action$.pipe(
-    ofType(signoutSuccess.type),
+    ofType(requestSignout.success),
     map(() => {
       localStorage.setItem("za-token", "");
     }),
@@ -89,11 +82,7 @@ const requestSignoutSuccessEpic = action$ =>
   );
 
 const requestSignoutFailureEpic = action$ =>
-  action$.pipe(
-    ofType(requestSignout.failure),
-    tap(console.log),
-    ignoreElements()
-  );
+  action$.pipe(ofType(requestSignout.failure), mapTo(push("/signin")));
 
 export {
   requestSigninEpic,

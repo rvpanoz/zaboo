@@ -1,8 +1,9 @@
 import { from, of, pipe } from "rxjs";
-import { switchMap, map, catchError } from "rxjs/operators";
+import { switchMap, tap, map, catchError } from "rxjs/operators";
 
 export const httpPost = ({ initiator, successAction, failureAction }) =>
   pipe(
+    tap(console.log),
     switchMap(options =>
       from(initiator(options)).pipe(
         map(response => ({
@@ -13,7 +14,6 @@ export const httpPost = ({ initiator, successAction, failureAction }) =>
         }))
       )
     ),
-    tap(console.log),
     catchError(err =>
       of({
         type: failureAction,
