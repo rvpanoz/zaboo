@@ -13,6 +13,7 @@ export const httpPost = ({ initiator, successAction, failureAction }) =>
         }))
       )
     ),
+    tap(console.log),
     catchError(err =>
       of({
         type: failureAction,

@@ -1,12 +1,12 @@
 import { ofType } from "redux-observable";
-import { map, tap } from "rxjs/operators";
+import { map, tap, ignoreElements } from "rxjs/operators";
 import { getRequest } from "libraries/http";
 import { httpPost } from "./operators";
-import { updateTracks } from "actions/tracks/actions";
+import { updateTracks, fetchTracks } from "actions/tracks/actions";
 
 const fetchTracksEpic = action$ =>
   action$.pipe(
-    ofType("@TRACKS/FETCH"),
+    ofType(fetchTracks.type),
     map(({ payload }) => {
       const { url, ...rest } = payload;
 
@@ -19,20 +19,19 @@ const fetchTracksEpic = action$ =>
     }),
     httpPost({
       initiator: options => getRequest(options),
-      successAction: "@TRACKS/FETCH_SUCCESS",
-      failureAction: "@TRACKS/FETCH_FAILURE"
-    }),
-    tap(console.log)
+      successAction: fetchTracks.success,
+      failureAction: fetchTracks.failure
+    })
   );
 
 const fetchTracksSuccessEpic = action$ =>
   action$.pipe(
-    ofType("@TRACKS/FETCH_SUCCESS"),
+    ofType(fetchTracks.success),
     map(({ payload }) => {
       const tracks = Object.values(payload);
 
       return {
-        type: "@TRACKS/UPDATE_TRACKS",
+        type: updateTracks.type,
         payload: {
           tracks
         }
@@ -40,4 +39,7 @@ const fetchTracksSuccessEpic = action$ =>
     })
   );
 
-export { fetchTracksEpic, fetchTracksSuccessEpic };
+const fetchTracksFailureEpic = action$ =>
+  action$.pipe(ofType(fetchTracks.failure), tap(console.log), ignoreElements());
+
+export { fetchTracksEpic, fetchTracksSuccessEpic, fetchTracksFailureEpic };

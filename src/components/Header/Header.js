@@ -38,7 +38,7 @@ const Header = ({ sidebarOpen, toggleDrawer }) => {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            zaboo
+            vodafone
           </Typography>
           <Button color="inherit" onClick={signoutUser}>
             Sign out

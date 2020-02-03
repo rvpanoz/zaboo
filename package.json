@@ -16,7 +16,6 @@
     "components": "^0.1.0",
     "config": "^3.2.5",
     "connected-react-router": "^6.6.1",
-    "enzyme-adapter-react-16": "^1.15.2",
     "jwt-decode": "^2.2.0",
     "modules": "^0.4.0",
     "prop-types": "^15.7.2",
@@ -27,8 +26,7 @@
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.5",
     "redux-observable": "^1.2.0",
-    "rxjs": "^6.5.4",
-    "src": "^1.1.2"
+    "rxjs": "^6.5.4"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.8.3",
@@ -59,21 +57,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint && npm run format"
-    }
-  },
-  "lint-staged": {
-    "*.+(js|jsx)": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.+(json|css|md)": [
-      "prettier --write",
-      "git add"
-    ]
-  },
   "alias": {
     "config": "./src/config",
     "components": "./src/components",

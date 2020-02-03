@@ -20,7 +20,7 @@ const initialState = {
   isLoginDisabled: false,
   termsAccepted: true,
   termsOpen: false,
-  username: "rvpanoz@gmail.com",
+  username: "rvpanoz1@gmail.com",
   password: "pass1234"
 };
 

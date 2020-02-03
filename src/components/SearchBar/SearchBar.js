@@ -17,7 +17,7 @@ const SearchBar = () => {
   const rootRef = useRef();
   const inputRef = useRef();
 
-  const onSearch = e => {
+  const onSearch = () => {
     const {
       current: { value }
     } = inputRef;
