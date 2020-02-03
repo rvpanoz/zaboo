@@ -1,5 +1,5 @@
 import { ofType } from "redux-observable";
-import { map, mapTo, tap } from "rxjs/operators";
+import { map, mapTo } from "rxjs/operators";
 import { httpPost } from "./operators";
 import config from "config";
 import { push } from "connected-react-router";
@@ -23,12 +23,9 @@ const requestSigninEpic = action$ =>
     }),
     httpPost({
       initiator: postRequest,
-      successAction: requestSignin.success,
-      failureAction: requestSignin.failure
-    }),
-    map(() => ({
-      type: toggleLoader.type
-    }))
+      successActions: [toggleLoader.type, requestSignin.success],
+      failureActions: [requestSignin.failure]
+    })
   );
 
 const requestSigninSuccessEpic = action$ =>
@@ -69,15 +66,17 @@ const requestSignoutEpic = (action$, state$) => {
         url: `${SERVER_URL}/users/logout`
       };
 
-      return options;
+      return {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
     }),
     httpPost({
-      initiator: options =>
-        postRequest(options, {
-          Authorization: `Bearer ${token}`
-        }),
-      successAction: requestSignout.success,
-      failureAction: requestSignout.failure
+      initiator: postRequest,
+      successActions: [toggleLoader.type, requestSignout.success],
+      failureActions: [requestSignout.failure]
     })
   );
 };
