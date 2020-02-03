@@ -1,24 +1,23 @@
 import React from "react";
+import { func, bool } from "prop-types";
 import { useDispatch } from "react-redux";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import InputBase from "@material-ui/core/InputBase";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
-import SearchIcon from "@material-ui/icons/Search";
 import clsx from "clsx";
+import { requestSignout } from "actions/user/actions";
 import styles from "./styles";
-import { signout } from "../../actions/user/actions";
 
 const useStyles = makeStyles(styles);
 
 const Header = ({ sidebarOpen, toggleDrawer }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const signoutUser = () => dispatch(signout());
+  const signoutUser = () => dispatch(requestSignout());
 
   return (
     <div className={classes.root}>
@@ -39,21 +38,8 @@ const Header = ({ sidebarOpen, toggleDrawer }) => {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            zaboo
+            vodafone
           </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
           <Button color="inherit" onClick={signoutUser}>
             Sign out
           </Button>
@@ -61,6 +47,11 @@ const Header = ({ sidebarOpen, toggleDrawer }) => {
       </AppBar>
     </div>
   );
+};
+
+Header.propTypes = {
+  sidebarOpen: bool.isRequired,
+  toggleDrawer: func.isRequired
 };
 
 export default Header;

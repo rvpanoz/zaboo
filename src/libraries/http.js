@@ -4,17 +4,19 @@ const fetch = global.fetch;
  * HTTP GET
  * @param {*} params
  */
-export const getRequest = params => {
-  const { url } = params || {};
-  const options = {
-    method: "GET"
-  };
 
-  return fetch(url, options)
+const objectToQueryString = obj =>
+  Object.keys(obj)
+    .map(key => key + "=" + obj[key])
+    .join("&");
+
+export const getRequest = params => {
+  const { url, ...rest } = params || {};
+  const fetchUrl = url + objectToQueryString(rest);
+
+  return fetch(fetchUrl)
     .then(response => response.json())
-    .catch(error => {
-      throw error;
-    });
+    .catch(error => error);
 };
 
 /**
@@ -22,7 +24,7 @@ export const getRequest = params => {
  * @param {*} params
  * @param {*} headers
  */
-export const postRequest = (params, headers = {}) => {
+export const postRequest = ({ headers = {}, ...params }) => {
   const options = {
     method: "POST",
     headers: {
@@ -36,7 +38,5 @@ export const postRequest = (params, headers = {}) => {
 
   return fetch(url, { body: payload, ...options })
     .then(response => response.json())
-    .catch(error => {
-      throw error;
-    });
+    .catch(error => error);
 };

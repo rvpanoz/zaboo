@@ -3,11 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import CssBaseline from "@material-ui/core/CssBaseline";
-
-import Sidebar from "../Sidebar";
-import Header from "../Header";
+import { toggleSidebar } from "actions/ui/actions";
+import AppSnackBar from "components/common/AppSnackBar";
+import Sidebar from "components/Sidebar";
+import Header from "components/Header";
+import Dashboard from "components/Dashboard";
 import styles from "./styles";
-import { toggleSidebar } from "../../actions/ui/actions";
 
 const useStyles = makeStyles(styles);
 
@@ -15,8 +16,15 @@ const Layout = () => {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const sidebarOpen = useSelector(state => state.ui.sidebarOpen);
-  const toggleDrawer = () => dispatch(toggleSidebar(!sidebarOpen));
+  const sidebarOpen = useSelector(({ ui }) => ui.sidebarOpen);
+  const systemMessage = useSelector(({ system }) => system.message);
+
+  const toggleDrawer = () =>
+    dispatch(
+      toggleSidebar({
+        isOpen: !sidebarOpen
+      })
+    );
 
   return (
     <div className={classes.root}>
@@ -29,9 +37,10 @@ const Layout = () => {
         })}
       >
         <div style={{ padding: 60 }}>
-          <h3>Hola!</h3>
+          <Dashboard />
         </div>
       </main>
+      {systemMessage && <AppSnackBar message={systemMessage}></AppSnackBar>}
     </div>
   );
 };

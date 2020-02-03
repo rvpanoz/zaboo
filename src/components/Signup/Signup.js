@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React from "react";
 
 const Signup = () => <div>signup..</div>;
 

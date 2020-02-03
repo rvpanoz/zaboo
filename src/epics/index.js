@@ -1,4 +1,27 @@
 import { combineEpics } from "redux-observable";
-import { requestSigninEpic, signinEpic, signoutEpic } from "./userEpics";
+import {
+  requestSigninEpic,
+  requestSigninSuccessEpic,
+  requestSigninFailureEpic,
+  requestSignoutEpic,
+  requestSignoutSuccessEpic,
+  requestSignoutFailureEpic
+} from "./userEpics";
 
-export default combineEpics(requestSigninEpic, signinEpic, signoutEpic);
+import {
+  fetchTracksEpic,
+  fetchTracksSuccessEpic,
+  fetchTracksFailureEpic
+} from "./trackEpics";
+
+export default combineEpics(
+  fetchTracksEpic,
+  fetchTracksSuccessEpic,
+  fetchTracksFailureEpic,
+  requestSigninEpic,
+  requestSigninSuccessEpic,
+  requestSigninFailureEpic,
+  requestSignoutEpic,
+  requestSignoutSuccessEpic,
+  requestSignoutFailureEpic
+);

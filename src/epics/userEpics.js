@@ -1,96 +1,104 @@
 import { ofType } from "redux-observable";
-import { of, from } from "rxjs";
-import {
-  tap,
-  ignoreElements,
-  switchMap,
-  map,
-  takeUntil,
-  catchError,
-  mapTo
-} from "rxjs/operators";
-import { postRequest } from "libraries/http";
-import config from "config";
+import { map, mapTo, delay } from "rxjs/operators";
+import { httpPost } from "./operators";
 import { push } from "connected-react-router";
+import { postRequest } from "libraries/http";
+import { requestSignin, requestSignout } from "actions/user/actions";
+import { systemMessage } from "actions/system/actions";
+import { toggleLoader } from "actions/ui/actions";
+import config from "config";
 
 const { serverUrl: SERVER_URL } = config;
 
 const requestSigninEpic = action$ =>
   action$.pipe(
-    ofType("@USER/REQUEST_SIGNIN"),
-    switchMap(({ payload }) => {
-      const { email, password } = payload;
+    ofType(requestSignin.type),
+    map(({ payload }) => {
       const options = {
         url: `${SERVER_URL}/users/login`,
-        payload: JSON.stringify({
-          email,
-          password
-        })
+        payload: JSON.stringify(payload)
       };
 
-      return from(postRequest(options)).pipe(
-        map(response => {
-          const { token } = response;
-
-          if (token) {
-            return {
-              type: "@USER/AUTH_SUCCESS",
-              payload: {
-                token
-              }
-            };
-          }
-
-          return {
-            type: "@USER/AUTH_FAILURE"
-          };
-        }),
-        takeUntil(action$.pipe(ofType("@USER/AUTH_CANCEL"))),
-        catchError(err =>
-          of({
-            type: "@USER/AUTH_ERROR",
-            payload: err
-          })
-        )
-      );
+      return options;
+    }),
+    httpPost({
+      initiator: postRequest,
+      successActions: [toggleLoader.type, requestSignin.success],
+      failureActions: [requestSignin.failure]
     })
   );
 
-const signinEpic = action$ =>
+const requestSigninSuccessEpic = action$ =>
   action$.pipe(
-    ofType("@USER/AUTH_SUCCESS"),
+    ofType(requestSignin.success),
     map(({ payload }) => {
       const { token } = payload;
 
       localStorage.setItem("za-token", JSON.stringify({ token }));
     }),
+    delay(1000),
     mapTo(push("/"))
   );
 
-const signoutEpic = (action$, state$) => {
+const requestSigninFailureEpic = action$ =>
+  action$.pipe(
+    ofType(requestSignin.failure),
+    map(({ payload: { message } }) => {
+      localStorage.setItem("za-token", "");
+
+      return {
+        type: systemMessage.type,
+        payload: {
+          message
+        }
+      };
+    })
+  );
+
+const requestSignoutEpic = (action$, state$) => {
   const {
     user: { token }
   } = state$.value;
 
   return action$.pipe(
-    ofType("@USER/SIGNOUT"),
-    switchMap(() =>
-      of(
-        postRequest(
-          {
-            url: `${SERVER_URL}/users/logout`
-          },
-          {
-            Authorization: `Bearer ${token}`
-          }
-        )
-      )
-    ),
-    tap(() => {
-      localStorage.setItem("za-token", "");
+    ofType(requestSignout.type),
+    map(() => {
+      const options = {
+        url: `${SERVER_URL}/users/logoutall`
+      };
+
+      return {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
     }),
-    ignoreElements()
+    httpPost({
+      initiator: postRequest,
+      successActions: [toggleLoader.type, requestSignout.success],
+      failureActions: [requestSignout.failure]
+    })
   );
 };
 
-export { requestSigninEpic, signinEpic, signoutEpic };
+const requestSignoutSuccessEpic = action$ =>
+  action$.pipe(
+    ofType(requestSignout.success),
+    map(() => {
+      localStorage.setItem("za-token", "");
+    }),
+    mapTo(push("/signin"))
+  );
+
+const requestSignoutFailureEpic = action$ =>
+  action$.pipe(ofType(requestSignout.failure), mapTo(push("/signin")));
+
+export {
+  requestSigninEpic,
+  requestSigninSuccessEpic,
+  requestSigninFailureEpic,
+  requestSignoutEpic,
+  requestSignoutSuccessEpic,
+  requestSignoutFailureEpic
+};
