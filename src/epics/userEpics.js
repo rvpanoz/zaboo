@@ -5,6 +5,7 @@ import config from "config";
 import { push } from "connected-react-router";
 import { postRequest } from "libraries/http";
 import { requestSignin, requestSignout } from "actions/user/actions";
+import { systemMessage } from "actions/system/actions";
 
 const { serverUrl: SERVER_URL } = config;
 
@@ -40,11 +41,16 @@ const requestSigninSuccessEpic = action$ =>
 const requestSigninFailureEpic = action$ =>
   action$.pipe(
     ofType(requestSignin.failure),
-    map(error => {
-      console.log(error);
+    map(({ payload: { message } }) => {
       localStorage.setItem("za-token", "");
-    }),
-    mapTo(push("/signin"))
+
+      return {
+        type: systemMessage.type,
+        payload: {
+          message
+        }
+      };
+    })
   );
 
 const requestSignoutEpic = (action$, state$) => {

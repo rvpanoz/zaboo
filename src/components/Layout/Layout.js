@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import clsx from "clsx";
 import CssBaseline from "@material-ui/core/CssBaseline";
-
 import { toggleSidebar } from "actions/ui/actions";
+import AppSnackBar from "components/common/AppSnackBar";
 import Sidebar from "components/Sidebar";
 import Header from "components/Header";
 import Dashboard from "components/Dashboard";
@@ -17,6 +17,8 @@ const Layout = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const sidebarOpen = useSelector(({ ui }) => ui.sidebarOpen);
+  const systemMessage = useSelector(({ system }) => system.message);
+
   const toggleDrawer = () =>
     dispatch(
       toggleSidebar({
@@ -38,6 +40,7 @@ const Layout = () => {
           <Dashboard />
         </div>
       </main>
+      {systemMessage && <AppSnackBar message={systemMessage}></AppSnackBar>}
     </div>
   );
 };

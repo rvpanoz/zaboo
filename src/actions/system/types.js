@@ -1,0 +1,1 @@
+export const SYSTEM_MESSAGE = "@SYSTEM/SYSTEM_MESSAGE";

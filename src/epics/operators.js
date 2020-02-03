@@ -3,7 +3,6 @@ import { switchMap, tap, map, catchError } from "rxjs/operators";
 
 export const httpPost = ({ initiator, successAction, failureAction }) =>
   pipe(
-    tap(console.log),
     switchMap(options =>
       from(initiator(options)).pipe(
         map(response => ({
