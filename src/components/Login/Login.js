@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -13,13 +13,14 @@ import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import { requestSignin } from "actions/user/actions";
 import { isPasswordValid, isEmailValid } from "libraries/validators";
-import { TermsModal } from "../common";
+import AppSnackBar from "components/common/AppSnackBar";
+import TermsModal from "components/common/TermsModal";
 import styles from "./styles";
 
 const initialState = {
-  isLoginDisabled: false,
-  termsAccepted: true,
   termsOpen: false,
+  isLoginDisabled: true,
+  termsAccepted: true,
   username: "rvpanoz@gmail.com",
   password: "pass1234"
 };
@@ -65,6 +66,7 @@ const reducer = (state, action) => {
 
 const Login = () => {
   const dispatch = useDispatch();
+  const systemMessage = useSelector(({ system }) => system.message);
   const classes = useStyles();
   const [state, dispatchAction] = useReducer(reducer, initialState);
 
@@ -225,6 +227,9 @@ const Login = () => {
           })
         }
       />
+      {systemMessage && (
+        <AppSnackBar severity="error" message={systemMessage}></AppSnackBar>
+      )}
     </Container>
   );
 };

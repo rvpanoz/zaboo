@@ -16,9 +16,7 @@ export const getRequest = params => {
 
   return fetch(fetchUrl)
     .then(response => response.json())
-    .catch(error => {
-      throw error;
-    });
+    .catch(error => error);
 };
 
 /**
@@ -26,7 +24,7 @@ export const getRequest = params => {
  * @param {*} params
  * @param {*} headers
  */
-export const postRequest = (params, headers = {}) => {
+export const postRequest = ({ headers = {}, ...params }) => {
   const options = {
     method: "POST",
     headers: {
@@ -40,7 +38,5 @@ export const postRequest = (params, headers = {}) => {
 
   return fetch(url, { body: payload, ...options })
     .then(response => response.json())
-    .catch(error => {
-      throw error;
-    });
+    .catch(error => error);
 };

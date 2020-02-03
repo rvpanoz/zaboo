@@ -1,23 +1,46 @@
 import { from, of, pipe } from "rxjs";
-import { switchMap, tap, map, catchError } from "rxjs/operators";
+import {
+  switchMap,
+  concatMap,
+  catchError,
+  mergeMap,
+  tap
+} from "rxjs/operators";
 
-export const httpPost = ({ initiator, successAction, failureAction }) =>
+/**
+ *
+ * @param {*} param0
+ */
+export const httpPost = ({ initiator, successActions, failureActions }) =>
   pipe(
-    tap(console.log),
     switchMap(options =>
       from(initiator(options)).pipe(
-        map(response => ({
-          type: successAction,
-          payload: {
-            ...response
+        mergeMap((user, token) => {
+          if (user && user.error) {
+            throw user.error;
           }
-        }))
+
+          return from(successActions).pipe(
+            concatMap(action => {
+              return of({
+                type: action,
+                payload: {
+                  user,
+                  token
+                }
+              });
+            })
+          );
+        }),
+        catchError(err => {
+          return of({
+            type: failureActions[0],
+            payload: {
+              message: err
+            }
+          });
+        })
       )
     ),
-    catchError(err =>
-      of({
-        type: failureAction,
-        payload: err
-      })
-    )
+    tap(console.log)
   );
