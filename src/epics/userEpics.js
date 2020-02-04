@@ -1,5 +1,5 @@
 import { ofType } from "redux-observable";
-import { map, mapTo } from "rxjs/operators";
+import { concatMap, map, mapTo, delay } from "rxjs/operators";
 import { httpRequest } from "./operators";
 import { push } from "connected-react-router";
 import { postRequest } from "libraries/http";
@@ -7,6 +7,7 @@ import { requestSignin, requestSignout } from "actions/user/actions";
 import { systemMessage } from "actions/system/actions";
 import { toggleLoader } from "actions/ui/actions";
 import config from "config";
+import { of } from "rxjs";
 
 const { server, port } = config;
 
@@ -21,9 +22,10 @@ const requestSigninEpic = action$ =>
 
       return options;
     }),
+    delay(1000),
     httpRequest({
       initiator: postRequest,
-      successActions: [requestSignin.success],
+      successActions: [requestSignin.success, toggleLoader.type],
       failureActions: [requestSignin.failure]
     })
   );
@@ -42,15 +44,18 @@ const requestSigninSuccessEpic = action$ =>
 const requestSigninFailureEpic = action$ =>
   action$.pipe(
     ofType(requestSignin.failure),
-    map(({ payload: { message } }) => {
+    concatMap(({ payload: { message } }) => {
       localStorage.setItem("za-token", "");
 
-      return {
-        type: systemMessage.type,
-        payload: {
-          message
-        }
-      };
+      return of(
+        {
+          type: systemMessage.type,
+          payload: {
+            message
+          }
+        },
+        { type: toggleLoader.type }
+      );
     })
   );
 
@@ -75,7 +80,7 @@ const requestSignoutEpic = (action$, state$) => {
     }),
     httpRequest({
       initiator: postRequest,
-      successActions: [toggleLoader.type, requestSignout.success],
+      successActions: [requestSignout.success],
       failureActions: [requestSignout.failure]
     })
   );
@@ -91,10 +96,15 @@ const requestSignoutSuccessEpic = action$ =>
   );
 
 const requestSignoutFailureEpic = action$ =>
-  action$.pipe(ofType(requestSignout.failure), mapTo(push("/signin")));
+  action$.pipe(
+    ofType(requestSignout.failure),
+    map(() => {
+      localStorage.setItem("za-token", "");
+    }),
+    mapTo(push("/signin"))
+  );
 
 export {
-  showLoaderEpic,
   requestSigninEpic,
   requestSigninSuccessEpic,
   requestSigninFailureEpic,
