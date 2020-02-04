@@ -11,7 +11,7 @@ import styles from "./styles";
 
 const useStyles = makeStyles(styles);
 
-const SearchBar = () => {
+const SearchBar = ({ actionText, placeHolder }) => {
   const dispatch = useDispatch();
   const classes = useStyles(styles);
   const rootRef = useRef();
@@ -57,7 +57,7 @@ const SearchBar = () => {
           <SearchIcon />
         </div>
         <InputBase
-          placeholder="Search…"
+          placeholder={placeHolder}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput
@@ -68,11 +68,16 @@ const SearchBar = () => {
       </div>
       <div className={classes.action}>
         <Button color="inherit" onClick={onSearch}>
-          Search
+          {actionText}
         </Button>
       </div>
     </div>
   );
+};
+
+SearchBar.defaultProps = {
+  placeHolder: "Search",
+  actionText: "Search"
 };
 
 export default SearchBar;

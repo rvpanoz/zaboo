@@ -22,20 +22,35 @@ const TrackItem = ({ data }) => {
   const {
     id,
     artwork_url,
+    waveform_url,
     title,
     duration,
     uri,
     stream_url,
     streamable
   } = data;
-
+  console.log(data);
   return (
-    <div key={id.toString()}>
+    <div>
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar alt="Remy Sharp" src={artwork_url} />
+          <Avatar alt={title} src={waveform_url} />
         </ListItemAvatar>
-        <ListItemText primary={title} />
+        <ListItemText
+          primary={title}
+          secondary={
+            <React.Fragment>
+              <Typography
+                component="span"
+                variant="body2"
+                className={classes.inline}
+                color="textPrimary"
+              >
+                {title}
+              </Typography>
+            </React.Fragment>
+          }
+        />
       </ListItem>
       <Divider variant="inset" component="li" />
     </div>
