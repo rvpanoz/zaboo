@@ -12,11 +12,13 @@ const objectToQueryString = obj =>
 
 export const getRequest = params => {
   const { url, ...rest } = params || {};
-  const fetchUrl = url + objectToQueryString(rest);
+  const fetchUrl = `${url}${objectToQueryString(rest)}`;
 
   return fetch(fetchUrl)
     .then(response => response.json())
-    .catch(error => error);
+    .catch(error => {
+      return new Error(error);
+    });
 };
 
 /**
@@ -38,5 +40,7 @@ export const postRequest = ({ headers = {}, ...params }) => {
 
   return fetch(url, { body: payload, ...options })
     .then(response => response.json())
-    .catch(error => error);
+    .catch(error => {
+      return new Error(error);
+    });
 };
