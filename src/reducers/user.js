@@ -1,5 +1,5 @@
 import createReducer from "./createReducer";
-import { AUTH_SUCCESS, AUTH_FAILURE, SIGNOUT } from "actions/user/types";
+import { requestSignin, requestSignout } from "actions/user/actions";
 
 const initialState = {
   auth: false,
@@ -7,17 +7,22 @@ const initialState = {
 };
 
 const handlers = {
-  [AUTH_SUCCESS]: (state, { payload: { token } }) => ({
+  [requestSignin.success]: (state, { payload: { token } }) => ({
     ...state,
     auth: Boolean(token),
     token
   }),
-  [AUTH_FAILURE]: state => ({
+  [requestSignin.failure]: state => ({
     ...state,
     auth: false,
     token: ""
   }),
-  [SIGNOUT]: state => ({
+  [requestSignout.success]: state => ({
+    ...state,
+    auth: false,
+    token: ""
+  }),
+  [requestSignout.failure]: state => ({
     ...state,
     auth: false,
     token: ""

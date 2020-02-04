@@ -12,7 +12,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import { requestSignin } from "actions/user/actions";
+import { toggleLoader } from "actions/ui/actions";
 import { isPasswordValid, isEmailValid } from "libraries/validators";
+import AppLoader from "components/common/AppLoader";
 import AppSnackBar from "components/common/AppSnackBar";
 import TermsModal from "components/common/TermsModal";
 import styles from "./styles";
@@ -20,9 +22,9 @@ import styles from "./styles";
 const initialState = {
   termsOpen: false,
   isLoginDisabled: true,
-  termsAccepted: true,
-  username: "rvpanoz@gmail.com",
-  password: "pass1234"
+  termsAccepted: false,
+  username: "",
+  password: ""
 };
 
 const useStyles = makeStyles(styles);
@@ -67,8 +69,9 @@ const reducer = (state, action) => {
 const Login = () => {
   const dispatch = useDispatch();
   const systemMessage = useSelector(({ system }) => system.message);
-  const classes = useStyles();
+  const loader = useSelector(({ ui }) => ui.loader);
   const [state, dispatchAction] = useReducer(reducer, initialState);
+  const classes = useStyles();
 
   const {
     termsAccepted,
@@ -102,6 +105,7 @@ const Login = () => {
   const requestLogin = () => {
     const { username: email, password } = state;
 
+    dispatch(toggleLoader());
     dispatch(
       requestSignin({
         email,
@@ -227,6 +231,7 @@ const Login = () => {
           })
         }
       />
+      {loader && <AppLoader />}
       {systemMessage && (
         <AppSnackBar severity="error" message={systemMessage}></AppSnackBar>
       )}
