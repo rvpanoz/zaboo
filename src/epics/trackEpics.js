@@ -13,8 +13,8 @@ const fetchTracksEpic = action$ =>
     })),
     httpRequest({
       initiator: options => getRequest(options),
-      successAction: fetchTracks.success,
-      failureAction: fetchTracks.failure
+      successActions: [fetchTracks.success],
+      failureActions: [fetchTracks.failure]
     })
   );
 
