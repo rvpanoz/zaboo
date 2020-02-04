@@ -21,8 +21,8 @@ const TracksList = () => {
 
   return (
     <List className={classes.root}>
-      {tracks.map(track => (
-        <TrackItem data={track} />
+      {tracks.map((track, idx) => (
+        <TrackItem data={track} key={`track-${idx}`} />
       ))}
     </List>
   );
