@@ -1,5 +1,6 @@
 const config = {
-  serverUrl: "http://127.0.0.1:8000",
+  server: "http://127.0.0.1",
+  port: "8000",
   user: "panos-rv",
   client_id: "caa597c828eaadfad140af3da084e904",
   api: {

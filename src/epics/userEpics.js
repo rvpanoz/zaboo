@@ -1,6 +1,6 @@
 import { ofType } from "redux-observable";
-import { map, mapTo, delay } from "rxjs/operators";
-import { httpPost } from "./operators";
+import { map, mapTo, tap } from "rxjs/operators";
+import { httpRequest } from "./operators";
 import { push } from "connected-react-router";
 import { postRequest } from "libraries/http";
 import { requestSignin, requestSignout } from "actions/user/actions";
@@ -8,20 +8,20 @@ import { systemMessage } from "actions/system/actions";
 import { toggleLoader } from "actions/ui/actions";
 import config from "config";
 
-const { serverUrl: SERVER_URL } = config;
+const { server, port } = config;
 
 const requestSigninEpic = action$ =>
   action$.pipe(
     ofType(requestSignin.type),
     map(({ payload }) => {
       const options = {
-        url: `${SERVER_URL}/users/login`,
+        url: `${server}:${port}/users/login`,
         payload: JSON.stringify(payload)
       };
 
       return options;
     }),
-    httpPost({
+    httpRequest({
       initiator: postRequest,
       successActions: [toggleLoader.type, requestSignin.success],
       failureActions: [requestSignin.failure]
@@ -34,9 +34,8 @@ const requestSigninSuccessEpic = action$ =>
     map(({ payload }) => {
       const { token } = payload;
 
-      localStorage.setItem("za-token", JSON.stringify({ token }));
+      localStorage.setItem("za-token", token);
     }),
-    delay(1000),
     mapTo(push("/"))
   );
 
@@ -64,7 +63,7 @@ const requestSignoutEpic = (action$, state$) => {
     ofType(requestSignout.type),
     map(() => {
       const options = {
-        url: `${SERVER_URL}/users/logoutall`
+        url: `${server}:${port}/users/logoutall`
       };
 
       return {
@@ -74,7 +73,7 @@ const requestSignoutEpic = (action$, state$) => {
         }
       };
     }),
-    httpPost({
+    httpRequest({
       initiator: postRequest,
       successActions: [toggleLoader.type, requestSignout.success],
       failureActions: [requestSignout.failure]

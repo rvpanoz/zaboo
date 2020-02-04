@@ -20,7 +20,7 @@ const configureStore = (
   initialState = {
     user: {
       auth: Boolean(token),
-      token: token ? JSON.parse(token).token : ""
+      token
     }
   }
 ) => {
