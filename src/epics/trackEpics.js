@@ -2,7 +2,39 @@ import { ofType } from "redux-observable";
 import { map, tap, ignoreElements } from "rxjs/operators";
 import { getRequest } from "libraries/http";
 import { httpRequest } from "./operators";
-import { updateTracks, fetchTracks } from "actions/tracks/actions";
+import {
+  updateTracks,
+  fetchTracks,
+  resolveTrack
+} from "actions/tracks/actions";
+import config from "config";
+
+const {
+  api: { resolve: resolveUrl },
+  client_id
+} = config;
+
+const resolveTrackEpic = action$ =>
+  action$.pipe(
+    ofType(resolveTrack.type),
+    map(({ payload: { url } }) => {
+      return {
+        path: resolveUrl,
+        url,
+        client_id,
+        options: {
+          redirect: "error"
+        }
+      };
+    }),
+    tap(console.log),
+    // ignoreElements(),
+    httpRequest({
+      initiator: getRequest,
+      successActions: [resolveTrack.success],
+      failureActions: [resolveTrack.failure]
+    })
+  );
 
 const fetchTracksEpic = action$ =>
   action$.pipe(
@@ -36,4 +68,9 @@ const fetchTracksSuccessEpic = action$ =>
 const fetchTracksFailureEpic = action$ =>
   action$.pipe(ofType(fetchTracks.failure), tap(console.log), ignoreElements());
 
-export { fetchTracksEpic, fetchTracksSuccessEpic, fetchTracksFailureEpic };
+export {
+  resolveTrackEpic,
+  fetchTracksEpic,
+  fetchTracksSuccessEpic,
+  fetchTracksFailureEpic
+};
