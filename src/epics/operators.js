@@ -2,7 +2,7 @@ import { from, of, pipe, throwError } from "rxjs";
 import { switchMap, concatMap, catchError, mergeMap } from "rxjs/operators";
 
 /**
- * Operator to make HTPP requests
+ * Custom operator to make HTPP requests
  * supported GET, POST
  * @param {*} options
  */
@@ -14,7 +14,13 @@ export const httpRequest = ({ initiator, successActions, failureActions }) =>
           const isError = response instanceof Error;
 
           if (isError) {
-            return throwError(response);
+            return throwError(response.message);
+          }
+
+          const { error, ...rest } = response;
+
+          if (error) {
+            return throwError(error);
           }
 
           return from(successActions).pipe(
@@ -22,20 +28,22 @@ export const httpRequest = ({ initiator, successActions, failureActions }) =>
               of({
                 type: action,
                 payload: {
-                  ...response
+                  ...rest
                 }
               })
             )
           );
         }),
-        catchError(err =>
-          of({
-            type: failureActions[0],
+        catchError(error => {
+          return of({
+            type: Array.isArray(failureActions)
+              ? failureActions[0]
+              : "HTTP_ERROR",
             payload: {
-              message: err.message
+              message: error
             }
-          })
-        )
+          });
+        })
       )
     )
   );

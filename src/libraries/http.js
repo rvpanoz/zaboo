@@ -12,7 +12,7 @@ const objectToQueryString = obj =>
 
 export const getRequest = params => {
   const { url, ...rest } = params || {};
-  const fetchUrl = `${url}${objectToQueryString(rest)}`;
+  const fetchUrl = `${url}&${objectToQueryString(rest)}`;
 
   return fetch(fetchUrl)
     .then(response => response.json())

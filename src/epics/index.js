@@ -1,5 +1,6 @@
 import { combineEpics } from "redux-observable";
 import {
+  showLoaderEpic,
   requestSigninEpic,
   requestSigninSuccessEpic,
   requestSigninFailureEpic,
@@ -15,6 +16,7 @@ import {
 } from "./trackEpics";
 
 export default combineEpics(
+  showLoaderEpic,
   fetchTracksEpic,
   fetchTracksSuccessEpic,
   fetchTracksFailureEpic,

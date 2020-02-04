@@ -1,7 +1,8 @@
-import { TOGGLE_SIDEBAR } from "actions/ui/types";
+import { TOGGLE_SIDEBAR, TOGGLE_LOADER } from "actions/ui/types";
 import createReducer from "./createReducer";
 
 const initialState = {
+  loader: false,
   sidebarOpen: false
 };
 
@@ -13,7 +14,11 @@ const handlers = {
       ...state,
       sidebarOpen: isOpen
     };
-  }
+  },
+  [TOGGLE_LOADER]: state => ({
+    ...state,
+    loader: !state.loader
+  })
 };
 
 const reducer = createReducer(initialState, handlers);

@@ -1,5 +1,5 @@
 import { ofType } from "redux-observable";
-import { map, mapTo, tap } from "rxjs/operators";
+import { map, mapTo } from "rxjs/operators";
 import { httpRequest } from "./operators";
 import { push } from "connected-react-router";
 import { postRequest } from "libraries/http";
@@ -23,7 +23,7 @@ const requestSigninEpic = action$ =>
     }),
     httpRequest({
       initiator: postRequest,
-      successActions: [toggleLoader.type, requestSignin.success],
+      successActions: [requestSignin.success],
       failureActions: [requestSignin.failure]
     })
   );
@@ -94,6 +94,7 @@ const requestSignoutFailureEpic = action$ =>
   action$.pipe(ofType(requestSignout.failure), mapTo(push("/signin")));
 
 export {
+  showLoaderEpic,
   requestSigninEpic,
   requestSigninSuccessEpic,
   requestSigninFailureEpic,
