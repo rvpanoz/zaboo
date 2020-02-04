@@ -27,8 +27,8 @@ const AppSnackBar = ({ severity, message }) => {
       return;
     }
 
-    dispatch(clearSystemMessage());
     setOpen(false);
+    dispatch(clearSystemMessage());
   };
 
   return (

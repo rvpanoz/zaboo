@@ -1,23 +1,17 @@
 import { ofType } from "redux-observable";
 import { map, tap, ignoreElements } from "rxjs/operators";
 import { getRequest } from "libraries/http";
-import { httpPost } from "./operators";
+import { httpRequest } from "./operators";
 import { updateTracks, fetchTracks } from "actions/tracks/actions";
 
 const fetchTracksEpic = action$ =>
   action$.pipe(
     ofType(fetchTracks.type),
-    map(({ payload }) => {
-      const { url, ...rest } = payload;
-
-      const options = {
-        url,
-        ...rest
-      };
-
-      return options;
-    }),
-    httpPost({
+    map(({ payload: { url, ...rest } }) => ({
+      url,
+      ...rest
+    })),
+    httpRequest({
       initiator: options => getRequest(options),
       successAction: fetchTracks.success,
       failureAction: fetchTracks.failure

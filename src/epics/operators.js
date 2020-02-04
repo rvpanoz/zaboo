@@ -1,46 +1,41 @@
-import { from, of, pipe } from "rxjs";
-import {
-  switchMap,
-  concatMap,
-  catchError,
-  mergeMap,
-  tap
-} from "rxjs/operators";
+import { from, of, pipe, throwError } from "rxjs";
+import { switchMap, concatMap, catchError, mergeMap } from "rxjs/operators";
 
 /**
- *
- * @param {*} param0
+ * Operator to make HTPP requests
+ * supported GET, POST
+ * @param {*} options
  */
-export const httpPost = ({ initiator, successActions, failureActions }) =>
+export const httpRequest = ({ initiator, successActions, failureActions }) =>
   pipe(
     switchMap(options =>
       from(initiator(options)).pipe(
-        mergeMap((user, token) => {
-          if (user && user.error) {
-            throw user.error;
+        mergeMap(response => {
+          const isError = response instanceof Error;
+
+          if (isError) {
+            return throwError(response);
           }
 
           return from(successActions).pipe(
-            concatMap(action => {
-              return of({
+            concatMap(action =>
+              of({
                 type: action,
                 payload: {
-                  user,
-                  token
+                  ...response
                 }
-              });
-            })
+              })
+            )
           );
         }),
-        catchError(err => {
-          return of({
+        catchError(err =>
+          of({
             type: failureActions[0],
             payload: {
-              message: err
+              message: err.message
             }
-          });
-        })
+          })
+        )
       )
-    ),
-    tap(console.log)
+    )
   );
