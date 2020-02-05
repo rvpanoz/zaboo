@@ -1,8 +1,12 @@
-const DRAWER_WIDTH = 240;
+const DRAWER_WIDTH = 0;
 
 const styles = theme => ({
   root: {
-    display: "flex"
+    display: "flex",
+    alignItems: "flex-end"
+  },
+  flexItemG1: {
+    flexGrow: 1
   },
   content: {
     flexGrow: 1,
