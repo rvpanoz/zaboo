@@ -16,7 +16,7 @@ const requestSigninEpic = action$ =>
     ofType(requestSignin.type),
     map(({ payload }) => {
       const options = {
-        url: `${server}:${port}/users/login`,
+        path: `${server}:${port}/users/login`,
         payload: JSON.stringify(payload)
       };
 
@@ -68,7 +68,7 @@ const requestSignoutEpic = (action$, state$) => {
     ofType(requestSignout.type),
     map(() => {
       const options = {
-        url: `${server}:${port}/users/logoutall`
+        path: `${server}:${port}/users/logoutall`
       };
 
       return {
