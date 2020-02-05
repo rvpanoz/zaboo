@@ -21,14 +21,9 @@ const resolveTrackEpic = action$ =>
       return {
         path: resolveUrl,
         url,
-        client_id,
-        options: {
-          redirect: "error"
-        }
+        client_id
       };
     }),
-    tap(console.log),
-    // ignoreElements(),
     httpRequest({
       initiator: getRequest,
       successActions: [resolveTrack.success],

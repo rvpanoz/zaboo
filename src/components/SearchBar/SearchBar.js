@@ -48,9 +48,10 @@ const SearchBar = ({ actionText, placeHolder }) => {
           }}
           onKeyDown={onKeyDown}
           inputProps={{
-            "aria-label": "search",
+            "aria-label": placeHolder,
             ref: inputRef,
-            value: "https://soundcloud.com/livealok/alok-burning-man"
+            value:
+              "https://soundcloud.com/distrikt-sound/hoj-distrikt-music-episode-192"
           }}
         />
       </div>

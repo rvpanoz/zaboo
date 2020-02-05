@@ -12,13 +12,18 @@ const objectToQueryString = obj =>
     .map(key => key + "=" + obj[key])
     .join("&");
 
-export const getRequest = (params, options) => {
+export const getRequest = params => {
   const { path, ...rest } = params || {};
   const resource = `${path}?${objectToQueryString(rest)}`;
-  console.log(resource.toString());
 
   return fetch(resource, {
-    ...options
+    mode: "cors",
+    redirect: "follow",
+    credentials: "include",
+    headers: {
+      Accept: "application/json;text/javascript",
+      "Content-Type": "application/json;charset=UTF-8"
+    }
   })
     .then(response => {
       const { redirected } = response;
