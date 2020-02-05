@@ -9,12 +9,14 @@ import {
 } from "./userEpics";
 
 import {
+  resolveTrackEpic,
   fetchTracksEpic,
   fetchTracksSuccessEpic,
   fetchTracksFailureEpic
 } from "./trackEpics";
 
 export default combineEpics(
+  resolveTrackEpic,
   fetchTracksEpic,
   fetchTracksSuccessEpic,
   fetchTracksFailureEpic,

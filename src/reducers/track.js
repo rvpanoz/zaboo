@@ -1,15 +1,15 @@
-import { UPDATE_TRACKS } from "actions/tracks/types";
+import { resolveTrack } from "actions/tracks/actions";
 import createReducer from "./createReducer";
 
 const initialState = {
+  activeTrack: null,
   tracks: []
 };
 
 const handlers = {
-  [UPDATE_TRACKS]: (state, { payload: { tracks } }) => {
+  [resolveTrack.success]: (state, { payload }) => {
     return {
-      ...state,
-      tracks
+      ...state
     };
   }
 };
