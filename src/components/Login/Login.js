@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import { requestSignin } from "actions/user/actions";
 import { toggleLoader } from "actions/ui/actions";
+import { clearSystemMessage } from "actions/system/actions";
 import { isPasswordValid, isEmailValid } from "libraries/validators";
 import AppLoader from "components/common/AppLoader";
 import AppSnackBar from "components/common/AppSnackBar";
@@ -105,6 +106,7 @@ const Login = () => {
   const requestLogin = () => {
     const { username: email, password } = state;
 
+    dispatch(clearSystemMessage());
     dispatch(toggleLoader());
     dispatch(
       requestSignin({
