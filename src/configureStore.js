@@ -6,11 +6,7 @@ import { createStore, compose, applyMiddleware } from "redux";
 import { createEpicMiddleware } from "redux-observable";
 import { routerMiddleware } from "connected-react-router";
 import { createBrowserHistory } from "history";
-
-// epics
 import epics from "./epics";
-
-// root reducer
 import rootReducer from "./reducers";
 
 // get token from localStorage
