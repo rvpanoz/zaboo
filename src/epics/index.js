@@ -8,18 +8,10 @@ import {
   requestSignoutFailureEpic
 } from "./userEpics";
 
-import {
-  resolveTrackEpic,
-  fetchTracksEpic,
-  fetchTracksSuccessEpic,
-  fetchTracksFailureEpic
-} from "./trackEpics";
+import { resolveTrackEpic } from "./trackEpics";
 
 export default combineEpics(
   resolveTrackEpic,
-  fetchTracksEpic,
-  fetchTracksSuccessEpic,
-  fetchTracksFailureEpic,
   requestSigninEpic,
   requestSigninSuccessEpic,
   requestSigninFailureEpic,

@@ -25,14 +25,7 @@ export const getRequest = params => {
       "Content-Type": "application/json;charset=UTF-8"
     }
   })
-    .then(response => {
-      const { redirected } = response;
-
-      if (redirected) {
-        return response;
-      }
-      return response.json();
-    })
+    .then(response => response.json())
     .catch(error => {
       return new Error(error);
     });

@@ -5,7 +5,7 @@ import clsx from "clsx";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppSnackBar from "components/common/AppSnackBar";
 import Visualizer from "components/Visualizer";
-import Dashboard from "components/Dashboard";
+import SearchBar from "components/SearchBar";
 import styles from "./styles";
 
 const useStyles = makeStyles(styles);
@@ -27,7 +27,7 @@ const Layout = () => {
           <Visualizer />
         </div>
         <div>
-          <Dashboard />
+          <SearchBar />
         </div>
       </main>
       {systemMessage && <AppSnackBar message={systemMessage}></AppSnackBar>}

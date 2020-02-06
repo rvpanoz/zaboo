@@ -2,14 +2,17 @@ import { resolveTrack } from "actions/tracks/actions";
 import createReducer from "./createReducer";
 
 const initialState = {
-  activeTrack: null,
+  streamUrl: "",
   tracks: []
 };
 
 const handlers = {
   [resolveTrack.success]: (state, { payload }) => {
+    const { stream_url } = payload;
+
     return {
-      ...state
+      ...state,
+      stream_url
     };
   }
 };

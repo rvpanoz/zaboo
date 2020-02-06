@@ -1,3 +1,3 @@
 export const RESOLVE_TRACK = "@TRACKS/RESOLVE";
 export const FETCH_TRACKS = "@TRACKS/FETCH";
-export const UPDATE_TRACKS = "@TRACKS/UPDATE_TRACKS";
+export const UPDATE_TRACK = "@TRACKS/UPDATE_TRACK";
