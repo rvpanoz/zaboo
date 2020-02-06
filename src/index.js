@@ -8,6 +8,17 @@ import App from "./components/App";
 import { ConnectedRouter } from "connected-react-router";
 import configureStore, { history } from "./configureStore";
 
+window.requestAnimFrame = (function() {
+  return (
+    window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    function(callback) {
+      window.setTimeout(callback, 1000 / 60);
+    }
+  );
+})();
+
 const store = configureStore();
 
 ReactDOM.render(

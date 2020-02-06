@@ -8,10 +8,11 @@ import {
   requestSignoutFailureEpic
 } from "./userEpics";
 
-import { resolveTrackEpic } from "./trackEpics";
+import { resolveTrackEpic, updateTrackEpic } from "./trackEpics";
 
 export default combineEpics(
   resolveTrackEpic,
+  updateTrackEpic,
   requestSigninEpic,
   requestSigninSuccessEpic,
   requestSigninFailureEpic,

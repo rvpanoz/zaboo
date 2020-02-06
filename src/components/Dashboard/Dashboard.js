@@ -6,7 +6,7 @@ import styles from "./styles";
 const useStyles = makeStyles(styles);
 
 const Dashboard = () => {
-  const classes = useStyles(styles);
+  const classes = useStyles();
 
   return (
     <div className={classes.root}>

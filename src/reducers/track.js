@@ -1,18 +1,27 @@
-import { resolveTrack } from "actions/tracks/actions";
+import { updateTrack, updateTrackData } from "actions/tracks/actions";
 import createReducer from "./createReducer";
 
 const initialState = {
   streamUrl: "",
-  tracks: []
+  tracks: [],
+  frequencyData: []
 };
 
 const handlers = {
-  [resolveTrack.success]: (state, { payload }) => {
+  [updateTrack.type]: (state, { payload }) => {
     const { stream_url } = payload;
 
     return {
       ...state,
       stream_url
+    };
+  },
+  [updateTrackData.type]: (state, { payload }) => {
+    const { frequencyData } = payload;
+
+    return {
+      ...state,
+      frequencyData
     };
   }
 };

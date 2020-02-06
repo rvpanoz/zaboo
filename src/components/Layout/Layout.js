@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppSnackBar from "components/common/AppSnackBar";
+import AudioPlayer from "components/AudioPlayer";
 import Visualizer from "components/Visualizer";
 import SearchBar from "components/SearchBar";
 import styles from "./styles";
@@ -23,11 +24,14 @@ const Layout = () => {
           [classes.contentShift]: sidebarOpen
         })}
       >
-        <div className={classes.flexItemG1}>
+        <div>
+          <SearchBar />
+        </div>
+        <div>
           <Visualizer />
         </div>
         <div>
-          <SearchBar />
+          <AudioPlayer />
         </div>
       </main>
       {systemMessage && <AppSnackBar message={systemMessage}></AppSnackBar>}

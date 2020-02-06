@@ -1,5 +1,5 @@
 import { ofType } from "redux-observable";
-import { map, ignoreElements } from "rxjs/operators";
+import { map, tap, ignoreElements } from "rxjs/operators";
 import { getRequest } from "libraries/http";
 import { httpRequest } from "./operators";
 import { resolveTrack, updateTrack } from "actions/tracks/actions";
@@ -24,7 +24,19 @@ const resolveTrackEpic = action$ =>
       initiator: getRequest,
       successActions: [resolveTrack.success],
       failureActions: [resolveTrack.failure]
-    })
+    }),
+    tap(console.log)
   );
 
-export { resolveTrackEpic };
+const updateTrackEpic = action$ =>
+  action$.pipe(
+    ofType(resolveTrack.success),
+    map(({ payload: { stream_url } }) => ({
+      type: updateTrack.type,
+      payload: {
+        stream_url: `${stream_url}?client_id=${client_id}`
+      }
+    }))
+  );
+
+export { resolveTrackEpic, updateTrackEpic };
