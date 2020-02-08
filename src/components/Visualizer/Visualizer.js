@@ -32,67 +32,79 @@ const Vizualizer = () => {
   const draw = () => {
     const { current: svg } = svgRef;
 
-    const w = svg.attr("width");
-    const h = svg.attr("height");
+    const w = parseInt(svg.attr("width"));
+    const h = parseInt(svg.attr("height"));
     const margins = { top: 0, right: 10, bottom: 0, left: 10 };
 
-    const dataset = Array(100)
+    const dataset = Array(33)
       .fill({
         x: 0,
-        y: h / 2
+        y: 0
       })
       .map((d, idx) => ({
-        x: d.x + idx * 2,
+        x: d.x + idx * 10,
         y: d.y
       }));
 
-    const [xScale, yScale] = d3Scales(dataset, w, h, margins);
+    const [xScale] = d3Scales(dataset, w, h, margins);
+
+    svg
+      .selectAll("bar")
+      .data(dataset)
+      .enter()
+      .append("rect")
+      .style("fill", "steelblue")
+      .attr("x", function(d) {
+        return xScale(d.x) - 2;
+      })
+      .attr("width", 5)
+      .attr("y", h / 2 - 10)
+      .attr("height", 5);
 
     svg
       .selectAll("circle")
       .data(dataset)
       .enter()
       .append("circle")
-      .attr("fill", d => colorScale(d.x))
-      .attr("cy", d => yScale(d.y))
-      .attr("cx", d => xScale(d.x))
-      .attr("r", 3);
+      .attr("fill", function(d, i) {
+        return colorScale(d.x);
+      })
+      .attr("cx", function(d, i) {
+        return xScale(d.x);
+      })
+      .attr("cy", function(d, i) {
+        return h / 2;
+      })
+      .attr("r", 5);
 
     svg.exit().remove();
   };
 
-  const handleCanPlay = () => {
-    const { current: svg } = svgRef;
-
-    svg
-      .selectAll("circle")
-      .transition()
-      .delay((d, idx) => idx * 50)
-      .on("start", function repeat() {
-        d3.active(this)
-          .style("fill", d => colorScale(d.x))
-          .transition()
-          .style("fill", d => colorScale(d.y))
-          .transition()
-          .on("start", repeat);
-      });
-  };
+  const handleCanPlay = () => {};
 
   const handlePlay = e => {
     const { current: svg } = svgRef;
     const h = svg.attr("height");
+    const w = svg.attr("width");
 
     timerRef.current = d3.timer(() => {
       analyser.getByteFrequencyData(frequencyData);
 
       svgRef.current
-        .selectAll("circle")
+        .selectAll("rect")
         .data(frequencyData)
-        .attr("cy", function(d) {
+        .attr("y", function(d) {
           return h / 2 - d;
         })
         .attr("fill", function(d, i) {
           return colorScale(d);
+        });
+
+      svg
+        .selectAll("circle")
+        .data(frequencyData)
+        .attr("cy", function(d, i) {
+          return h / 2 + d;
         });
     });
   };
@@ -104,16 +116,19 @@ const Vizualizer = () => {
     timerRef && timerRef.current.stop();
 
     svg
+      .selectAll("rect")
+      .transition()
+      .ease(d3.easeCubicOut)
+      .attr("y", h / 2);
+
+    svg
       .selectAll("circle")
       .transition()
       .ease(d3.easeCubicOut)
-      .attr("cy", function(d) {
-        return h / 2;
-      });
+      .attr("cy", h / 2);
   };
 
   const handleLoadStart = () => {
-    console.log("loaded");
     draw();
   };
 
@@ -158,13 +173,15 @@ const Vizualizer = () => {
     svgRef.current = d3
       .select(container)
       .append("svg")
-      .attr("height", window.innerHeight - 120)
-      .attr("width", window.innerWidth);
+      .attr("height", container.offsetHeight)
+      .attr("width", container.offsetWidth);
 
     if (audio) {
       const audioSrc = audioCtx.createMediaElementSource(audio);
 
-      audio.volume = 1.0;
+      audio.src =
+        "https://api.soundcloud.com/tracks/708026479/stream?client_id=caa597c828eaadfad140af3da084e904";
+      audio.volume = 0.1;
       audioSrc.connect(analyser);
 
       addListeners();
@@ -184,7 +201,7 @@ const Vizualizer = () => {
           preload="true"
           ref={audioRef}
           crossOrigin="anonymous"
-          src="https://api.soundcloud.com/tracks/708026479/stream?client_id=caa597c828eaadfad140af3da084e904"
+          src=""
         >
           Your browser does not support HTML5 Audio!
         </audio>
