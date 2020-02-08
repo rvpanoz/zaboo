@@ -12,11 +12,14 @@ const t0 = Date.now();
 
 var colorScale = d3
   .scaleLinear()
-  .domain([0, 150])
-  .range(["#2c7be9", "#e1799e"]);
+  .domain([0, 99])
+  .range(["#c85bbf", "#5b71c8"]);
 
 analyser.connect(audioCtx.destination);
 analyser.fftSize = 256;
+
+const bufferSize = analyser.frequencyBinCount;
+const frequencyData = new Uint8Array(bufferSize);
 
 const Vizualizer = () => {
   const classes = useStyles();
@@ -31,19 +34,18 @@ const Vizualizer = () => {
 
     const w = svg.attr("width");
     const h = svg.attr("height");
+    const margins = { top: 0, right: 10, bottom: 0, left: 10 };
 
-    const margins = { top: 40, right: 10, bottom: 130, left: 7 };
     const dataset = Array(100)
       .fill({
         x: 0,
         y: h / 2
       })
       .map((d, idx) => ({
-        x: d.x + idx / 0.1,
+        x: d.x + idx * 2,
         y: d.y
       }));
 
-    console.log(dataset);
     const [xScale, yScale] = d3Scales(dataset, w, h, margins);
 
     svg
@@ -54,13 +56,15 @@ const Vizualizer = () => {
       .attr("fill", d => colorScale(d.x))
       .attr("cy", d => yScale(d.y))
       .attr("cx", d => xScale(d.x))
-      .attr("r", 5);
+      .attr("r", 3);
 
     svg.exit().remove();
   };
 
-  const canPlay = () => {
-    svgRef.current
+  const handleCanPlay = () => {
+    const { current: svg } = svgRef;
+
+    svg
       .selectAll("circle")
       .transition()
       .delay((d, idx) => idx * 50)
@@ -70,8 +74,6 @@ const Vizualizer = () => {
           .transition()
           .style("fill", d => colorScale(d.y))
           .transition()
-          // .style("fill", d => colorScale(10))
-          // .transition()
           .on("start", repeat);
       });
   };
@@ -79,9 +81,6 @@ const Vizualizer = () => {
   const handlePlay = e => {
     const { current: svg } = svgRef;
     const h = svg.attr("height");
-    const w = svg.attr("width");
-    const bufferSize = analyser.frequencyBinCount;
-    const frequencyData = new Uint8Array(bufferSize);
 
     timerRef.current = d3.timer(() => {
       analyser.getByteFrequencyData(frequencyData);
@@ -101,9 +100,10 @@ const Vizualizer = () => {
   const handlePause = () => {
     const { current: svg } = svgRef;
     const h = svg.attr("height");
+
     timerRef && timerRef.current.stop();
 
-    svgRef.current
+    svg
       .selectAll("circle")
       .transition()
       .ease(d3.easeCubicOut)
@@ -112,7 +112,40 @@ const Vizualizer = () => {
       });
   };
 
-  const handleLoadStart = () => {};
+  const handleLoadStart = () => {
+    console.log("loaded");
+    draw();
+  };
+
+  const addListeners = () => {
+    const { current: audio } = audioRef;
+
+    const eventHandlers = {
+      loadstart: handleLoadStart,
+      canplay: handleCanPlay,
+      play: handlePlay,
+      pause: handlePause
+    };
+
+    for (let handler in eventHandlers) {
+      audio.addEventListener(handler, eventHandlers[handler]);
+    }
+  };
+
+  const removeListeners = () => {
+    const { current: audio } = audioRef;
+
+    const eventHandlers = {
+      loadstart: handleLoadStart,
+      canplay: handleCanPlay,
+      play: handlePlay,
+      pause: handlePause
+    };
+
+    for (let handler in eventHandlers) {
+      audio.addEventListener(handler, eventHandlers[handler]);
+    }
+  };
 
   useEffect(() => {
     const { current: container } = containerRef;
@@ -134,13 +167,12 @@ const Vizualizer = () => {
       audio.volume = 1.0;
       audioSrc.connect(analyser);
 
-      audio.addEventListener("loadstart", handleLoadStart);
-      audio.addEventListener("canplay", canPlay);
-      audio.addEventListener("play", handlePlay);
-      audio.addEventListener("pause", handlePause);
+      addListeners();
     }
 
-    draw();
+    return () => {
+      removeListeners();
+    };
   }, []);
 
   return (

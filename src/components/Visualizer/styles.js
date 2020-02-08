@@ -7,6 +7,9 @@ const styles = theme => ({
   },
   visualizer: {
     flexGrow: 1
+  },
+  audio: {
+    textAlign: "center"
   }
 });
 
