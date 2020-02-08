@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import * as d3 from "d3";
+import { d3Scales } from "libraries/utilities";
 import styles from "./styles";
 
 const useStyles = makeStyles(styles);
@@ -12,7 +13,7 @@ const t0 = Date.now();
 var colorScale = d3
   .scaleLinear()
   .domain([0, 150])
-  .range(["#2c7bb6", "#d7199e"]);
+  .range(["#2c7be9", "#e1799e"]);
 
 analyser.connect(audioCtx.destination);
 analyser.fftSize = 256;
@@ -23,7 +24,6 @@ const Vizualizer = () => {
   const svgRef = useRef();
   const audioRef = useRef();
   const timerRef = useRef();
-
   const streamUrl = useSelector(({ track }) => track.stream_url);
 
   const draw = () => {
@@ -32,33 +32,26 @@ const Vizualizer = () => {
     const w = svg.attr("width");
     const h = svg.attr("height");
 
-    const margin = { top: 40, right: 10, bottom: 130, left: 7 };
-    const dataset = Array(33)
+    const margins = { top: 40, right: 10, bottom: 130, left: 7 };
+    const dataset = Array(100)
       .fill({
         x: 0,
-        y: 0
+        y: h / 2
       })
       .map((d, idx) => ({
-        x: d.x + idx * 10,
+        x: d.x + idx / 0.1,
         y: d.y
       }));
 
-    const xScale = d3
-      .scaleLinear()
-      .domain([0, d3.max(dataset, d => d.x)])
-      .range([margin.left, w - margin.right]);
-
-    const yScale = d3
-      .scaleLinear()
-      .domain([0, d3.max(dataset, d => d.y)])
-      .range([margin.top, h - margin.bottom]);
+    console.log(dataset);
+    const [xScale, yScale] = d3Scales(dataset, w, h, margins);
 
     svg
       .selectAll("circle")
       .data(dataset)
       .enter()
       .append("circle")
-      .attr("fill", d => colorScale(d.y))
+      .attr("fill", d => colorScale(d.x))
       .attr("cy", d => yScale(d.y))
       .attr("cx", d => xScale(d.x))
       .attr("r", 5);
@@ -77,8 +70,8 @@ const Vizualizer = () => {
           .transition()
           .style("fill", d => colorScale(d.y))
           .transition()
-          .style("fill", d => colorScale(d.x + d.y))
-          .transition()
+          // .style("fill", d => colorScale(10))
+          // .transition()
           .on("start", repeat);
       });
   };
@@ -86,6 +79,7 @@ const Vizualizer = () => {
   const handlePlay = e => {
     const { current: svg } = svgRef;
     const h = svg.attr("height");
+    const w = svg.attr("width");
     const bufferSize = analyser.frequencyBinCount;
     const frequencyData = new Uint8Array(bufferSize);
 
@@ -158,7 +152,7 @@ const Vizualizer = () => {
           preload="true"
           ref={audioRef}
           crossOrigin="anonymous"
-          src={streamUrl}
+          src="https://api.soundcloud.com/tracks/708026479/stream?client_id=caa597c828eaadfad140af3da084e904"
         >
           Your browser does not support HTML5 Audio!
         </audio>
