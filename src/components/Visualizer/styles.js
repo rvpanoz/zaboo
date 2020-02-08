@@ -1,6 +1,12 @@
 const styles = theme => ({
   root: {
-    width: "100%"
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "100%"
+  },
+  visualizer: {
+    flexGrow: 1
   }
 });
 

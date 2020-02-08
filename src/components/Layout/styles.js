@@ -1,29 +1,26 @@
-const DRAWER_WIDTH = 0;
-
 const styles = theme => ({
   root: {
-    display: "flex",
-    alignItems: "flex-end"
-  },
-  flexItemG1: {
-    flexGrow: 1
+    width: "100%"
   },
   content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: -DRAWER_WIDTH
+    display: "flex",
+    flexDirection: "column",
+    height: "100%"
   },
-  contentShift: {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: 0
+  top: {
+    position: "relative",
+    top: 0,
+    padding: theme.spacing(1)
+  },
+  main: {
+    flexGrow: 1
   }
+  // main: {
+  //   width: "100%",
+  //   position: "absolute",
+  //   bottom: 0,
+  //   minHeight: 65
+  // }
 });
 
 export default styles;

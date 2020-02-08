@@ -1,65 +1,170 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 import * as d3 from "d3";
+import styles from "./styles";
+
+const useStyles = makeStyles(styles);
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioCtx.createAnalyser();
+const t0 = Date.now();
+
+var colorScale = d3
+  .scaleLinear()
+  .domain([0, 150])
+  .range(["#2c7bb6", "#d7199e"]);
+
+analyser.connect(audioCtx.destination);
+analyser.fftSize = 256;
 
 const Vizualizer = () => {
+  const classes = useStyles();
   const containerRef = useRef();
-  const timer = useRef();
-  const svg = useRef();
+  const svgRef = useRef();
+  const audioRef = useRef();
+  const timerRef = useRef();
 
-  const visualize = () => {
-    //color
-    var colors = d3.scaleOrdinal(d3.schemeCategory10);
+  const streamUrl = useSelector(({ track }) => track.stream_url);
 
-    //copy byte frequencyData into frequencyData array
-    // this.analyser.getByteFrequencyData(frequencyData);
+  const draw = () => {
+    const { current: svg } = svgRef;
 
-    var arc = d3
-      .arc()
-      .startAngle(function(d, i) {
-        return 0;
+    const w = svg.attr("width");
+    const h = svg.attr("height");
+
+    const margin = { top: 40, right: 10, bottom: 130, left: 7 };
+    const dataset = Array(33)
+      .fill({
+        x: 0,
+        y: 0
       })
-      .endAngle(function(d, i) {
-        return 2 * Math.PI;
-      })
-      .innerRadius(function(d) {
-        return d / 2;
-      })
-      .outerRadius(function(d) {
-        return d;
-      });
+      .map((d, idx) => ({
+        x: d.x + idx * 10,
+        y: d.y
+      }));
 
-    svg.current
-      .select("g")
-      .selectAll("path")
-      .data([])
-      .attr("d", arc)
-      .attr("fill", function(d, i) {
-        return colors(function(d, i) {
-          return d * i + Math.floor(Math.random() * 100);
-        });
-      });
+    const xScale = d3
+      .scaleLinear()
+      .domain([0, d3.max(dataset, d => d.x)])
+      .range([margin.left, w - margin.right]);
 
-    //clean up
-    svg.current.exit().remove();
+    const yScale = d3
+      .scaleLinear()
+      .domain([0, d3.max(dataset, d => d.y)])
+      .range([margin.top, h - margin.bottom]);
+
+    svg
+      .selectAll("circle")
+      .data(dataset)
+      .enter()
+      .append("circle")
+      .attr("fill", d => colorScale(d.y))
+      .attr("cy", d => yScale(d.y))
+      .attr("cx", d => xScale(d.x))
+      .attr("r", 5);
+
+    svg.exit().remove();
   };
 
+  const canPlay = () => {
+    svgRef.current
+      .selectAll("circle")
+      .transition()
+      .delay((d, idx) => idx * 50)
+      .on("start", function repeat() {
+        d3.active(this)
+          .style("fill", d => colorScale(d.x))
+          .transition()
+          .style("fill", d => colorScale(d.y))
+          .transition()
+          .style("fill", d => colorScale(d.x + d.y))
+          .transition()
+          .on("start", repeat);
+      });
+  };
+
+  const handlePlay = e => {
+    const { current: svg } = svgRef;
+    const h = svg.attr("height");
+    const bufferSize = analyser.frequencyBinCount;
+    const frequencyData = new Uint8Array(bufferSize);
+
+    timerRef.current = d3.timer(() => {
+      analyser.getByteFrequencyData(frequencyData);
+
+      svgRef.current
+        .selectAll("circle")
+        .data(frequencyData)
+        .attr("cy", function(d) {
+          return h / 2 - d;
+        })
+        .attr("fill", function(d, i) {
+          return colorScale(d);
+        });
+    });
+  };
+
+  const handlePause = () => {
+    const { current: svg } = svgRef;
+    const h = svg.attr("height");
+    timerRef && timerRef.current.stop();
+
+    svgRef.current
+      .selectAll("circle")
+      .transition()
+      .ease(d3.easeCubicOut)
+      .attr("cy", function(d) {
+        return h / 2;
+      });
+  };
+
+  const handleLoadStart = () => {};
+
   useEffect(() => {
-    const { current } = containerRef;
+    const { current: container } = containerRef;
+    const { current: audio } = audioRef;
 
-    if (current) {
-      svg.current = d3
-        .select(current)
-        .append("svg")
-        .attr("height", 400)
-        .attr("width", 400);
-
-      //start visualization using d3.timer function
-      timer.current = d3.timer(visualize);
+    if (!container) {
+      return;
     }
+
+    svgRef.current = d3
+      .select(container)
+      .append("svg")
+      .attr("height", window.innerHeight - 120)
+      .attr("width", window.innerWidth);
+
+    if (audio) {
+      const audioSrc = audioCtx.createMediaElementSource(audio);
+
+      audio.volume = 1.0;
+      audioSrc.connect(analyser);
+
+      audio.addEventListener("loadstart", handleLoadStart);
+      audio.addEventListener("canplay", canPlay);
+      audio.addEventListener("play", handlePlay);
+      audio.addEventListener("pause", handlePause);
+    }
+
+    draw();
   }, []);
 
-  return <div ref={containerRef}></div>;
+  return (
+    <div className={classes.root}>
+      <div className={classes.visualizer} ref={containerRef}></div>
+      <div className={classes.audio}>
+        <audio
+          controls="controls"
+          preload="true"
+          ref={audioRef}
+          crossOrigin="anonymous"
+          src={streamUrl}
+        >
+          Your browser does not support HTML5 Audio!
+        </audio>
+      </div>
+    </div>
+  );
 };
 
 export default Vizualizer;
