@@ -13,14 +13,9 @@ const styles = theme => ({
     padding: theme.spacing(1)
   },
   main: {
+    backgroundColor: "#00000a",
     flexGrow: 1
   }
-  // main: {
-  //   width: "100%",
-  //   position: "absolute",
-  //   bottom: 0,
-  //   minHeight: 65
-  // }
 });
 
 export default styles;

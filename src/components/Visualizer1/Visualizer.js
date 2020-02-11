@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import * as d3 from "d3";
-import { d3Scales } from "libraries/utilities";
 import styles from "./styles";
 
 const useStyles = makeStyles(styles);
@@ -20,21 +19,7 @@ analyser.fftSize = 256;
 
 const bufferSize = analyser.frequencyBinCount;
 const frequencyData = new Uint8Array(bufferSize);
-
 const margins = { top: 0, right: 10, bottom: 0, left: 10 };
-
-const dataset = Array(100)
-  .fill({
-    x: 0,
-    y: 0
-  })
-  .map((d, idx) => ({
-    x: d.x + idx * 10,
-    y: d.y
-  }));
-
-const w = window.innerWidth;
-const h = window.innerHeight - 65;
 
 const Vizualizer = () => {
   const classes = useStyles();
@@ -46,53 +31,46 @@ const Vizualizer = () => {
 
   const draw = () => {
     const { current: svg } = svgRef;
-    const [xScale] = d3Scales(dataset, w, h, margins);
+    const n = 21;
+    const WIDTH = svg.attr("width");
+    const HEIGHT = svg.attr("height");
 
-    const group1 = svg
-      .append("g")
-      .attr("class", "group1")
-      .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
+    const lines = svg.append("g").attr("class", "lines");
+    const dataset = d3.range(n).map(function(d) {
+      return { y: parseInt(d3.randomUniform(0, HEIGHT - 10)()) };
+    });
 
-    group1
-      .selectAll("circles")
-      .data(dataset)
-      .enter()
-      .append("circle")
-      .attr("fill", function(d, i) {
-        return colorScale(d.x);
-      })
-      .attr("cx", function(d, i) {
-        return xScale(d.x);
-      })
-      .attr("cy", function(d, i) {
-        return h / 2;
-      })
-      .attr("r", 10);
+    const xScale = d3
+      .scaleLinear()
+      .domain([0, n - 1])
+      .range([0, WIDTH]);
 
-    svg.exit().remove();
+    const yScale = d3
+      .scaleLinear()
+      .domain([0, d3.max(dataset, d => d.y)])
+      .range([0, HEIGHT]);
+
+    // d3's line generator
+    const line = d3
+      .line()
+      .x(function(d, i) {
+        return xScale(i);
+      })
+      .y(function(d) {
+        return yScale(d.y);
+      })
+      .curve(d3.curveMonotoneX);
+
+    lines
+      .append("path")
+      .datum(dataset)
+      .attr("class", classes.line)
+      .attr("d", line);
   };
 
   const handleCanPlay = () => {};
 
-  const handlePlay = e => {
-    const { current: svg } = svgRef;
-    const h = svg.attr("height");
-    const w = svg.attr("width");
-
-    timerRef.current = d3.timer(() => {
-      analyser.getByteFrequencyData(frequencyData);
-
-      const group1 = svg.selectAll("g.group1");
-      const group2 = svg.selectAll("g.group2");
-
-      group1
-        .selectAll("circle")
-        .data(frequencyData)
-        .attr("cy", function(d, i) {
-          return h / 2 - d;
-        });
-    });
-  };
+  const handlePlay = e => {};
 
   const handlePause = () => {
     const { current: svg } = svgRef;
@@ -110,7 +88,7 @@ const Vizualizer = () => {
   };
 
   const handleLoadStart = () => {
-    draw();
+    // draw();
   };
 
   const addListeners = () => {
@@ -168,6 +146,8 @@ const Vizualizer = () => {
 
     addListeners();
 
+    draw();
+
     return () => {
       removeListeners();
     };
@@ -180,6 +160,7 @@ const Vizualizer = () => {
       audio.src = streamUrl;
     }
   }, [streamUrl]);
+
   return (
     <div className={classes.root}>
       <div className={classes.visualizer} ref={containerRef}></div>
