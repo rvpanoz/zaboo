@@ -58,7 +58,7 @@ const Vizualizer = () => {
       .data(dataset)
       .enter()
       .append("circle")
-      .attr("fill", function(d, i) {
+      .attr("fill", function(d) {
         return colorScale(d.x);
       })
       .attr("cx", function(d, i) {
@@ -67,7 +67,7 @@ const Vizualizer = () => {
       .attr("cy", function(d, i) {
         return h / 2;
       })
-      .attr("r", 10);
+      .attr("r", 5);
 
     svg.exit().remove();
   };
@@ -163,7 +163,7 @@ const Vizualizer = () => {
 
     const audioSrc = audioCtx.createMediaElementSource(audio);
 
-    audio.volume = 0.1;
+    audio.volume = 0.2;
     audioSrc.connect(analyser);
 
     addListeners();

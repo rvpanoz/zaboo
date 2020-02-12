@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppSnackBar from "components/common/AppSnackBar";
-import Visualizer from "components/Visualizer1";
+import Visualizer from "components/Visualizer";
 import SearchBar from "components/SearchBar";
 import styles from "./styles";
 
